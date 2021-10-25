@@ -14,6 +14,7 @@ type Projects interface {
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
 	ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error)
+	DeleteVariable(ctx context.Context, projectSlug, name string) error
 }
 
 // projects implementes Projects interface
@@ -233,4 +234,22 @@ func (s *projects) ListVariables(ctx context.Context, projectSlug string) (*Proj
 	}
 
 	return pvl, nil
+}
+
+func (s *projects) DeleteVariable(ctx context.Context, projectSlug, name string) error {
+	if !validString(&projectSlug) {
+		return ErrRequiredProjectSlug
+	}
+
+	if !validString(&name) {
+		return ErrRequiredProjectVariableName
+	}
+
+	u := fmt.Sprintf("project/%s/envvar/%s", projectSlug, name)
+	req, err := s.client.newRequest("DELETE", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }
