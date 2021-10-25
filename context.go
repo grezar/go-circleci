@@ -11,6 +11,7 @@ type Contexts interface {
 	Get(ctx context.Context, contextID string) (*Context, error)
 	Create(ctx context.Context, options ContextCreateOptions) (*Context, error)
 	Delete(ctx context.Context, contextID string) error
+	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
 }
 
 // contexts implements Contexts interface
@@ -133,4 +134,35 @@ func (s *contexts) Delete(ctx context.Context, contextID string) error {
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+type ContextVariableList struct {
+	Items         []*ContextVariable
+	NextPageToken string `json:"next_page_token"`
+}
+
+type ContextVariable struct {
+	Variable  string    `json:"variable"`
+	CreatedAt time.Time `json:"created_at"`
+	ContextID string    `json:"context_id"`
+}
+
+func (s *contexts) ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error) {
+	if !validString(&contextID) {
+		return nil, ErrRequiredContextID
+	}
+
+	u := fmt.Sprintf("context/%s", contextID)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	cl := &ContextVariableList{}
+	err = s.client.do(ctx, req, cl)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl, nil
 }
