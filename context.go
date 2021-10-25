@@ -102,7 +102,7 @@ func (s *contexts) Create(ctx context.Context, options ContextCreateOptions) (*C
 }
 
 func (s *contexts) Get(ctx context.Context, contextID string) (*Context, error) {
-	if contextID == "" {
+	if !validString(&contextID) {
 		return nil, ErrRequiredContextID
 	}
 
