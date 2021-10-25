@@ -102,3 +102,23 @@ func Test_contexts_Get(t *testing.T) {
 		t.Errorf("Contexts.Get got %+v, want %+v", c, want)
 	}
 }
+
+func Test_contexts_Delete(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	contextID := "ctx1"
+
+	mux.HandleFunc(fmt.Sprintf("/context/%s", contextID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"message": "string"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Contexts.Delete(ctx, contextID)
+	if err != nil {
+		t.Errorf("Contexts.Delete got error: %v", err)
+	}
+}

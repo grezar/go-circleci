@@ -10,6 +10,7 @@ type Contexts interface {
 	List(ctx context.Context, options ContextListOptions) (*ContextList, error)
 	Get(ctx context.Context, contextID string) (*Context, error)
 	Create(ctx context.Context, options ContextCreateOptions) (*Context, error)
+	Delete(ctx context.Context, contextID string) error
 }
 
 // contexts implements Contexts interface
@@ -118,4 +119,18 @@ func (s *contexts) Get(ctx context.Context, contextID string) (*Context, error) 
 	}
 
 	return c, nil
+}
+
+func (s *contexts) Delete(ctx context.Context, contextID string) error {
+	if !validString(&contextID) {
+		return ErrRequiredContextID
+	}
+
+	u := fmt.Sprintf("context/%s", contextID)
+	req, err := s.client.newRequest("DELETE", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }
