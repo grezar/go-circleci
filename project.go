@@ -3,10 +3,12 @@ package circleci
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 type Projects interface {
 	Get(ctx context.Context, projectSlug string) (*Project, error)
+	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
 }
 
 // projects implementes Projects interface
@@ -45,4 +47,47 @@ func (s *projects) Get(ctx context.Context, projectSlug string) (*Project, error
 	}
 
 	return p, nil
+}
+
+type ProjectCheckoutKey struct {
+	PublicKey   string    `json:"public-key"`
+	Type        string    `json:"type"`
+	Fingerprint string    `json:"fingerprint"`
+	Preferred   bool      `json:"preferred"`
+	CreatedAt   time.Time `json:"created-at"`
+}
+
+type ProjectCreateCheckoutKeyOptions struct {
+	Type *string `json:"type"`
+}
+
+func (o ProjectCreateCheckoutKeyOptions) valid() error {
+	if !validString(o.Type) {
+		return ErrRequiredProjectCheckoutKeyType
+	}
+	return nil
+}
+
+func (s *projects) CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	u := fmt.Sprintf("project/%s/checkout-key", projectSlug)
+	req, err := s.client.newRequest("POST", u, options)
+	if err != nil {
+		return nil, err
+	}
+
+	pck := &ProjectCheckoutKey{}
+	err = s.client.do(ctx, req, pck)
+	if err != nil {
+		return nil, err
+	}
+
+	return pck, nil
 }
