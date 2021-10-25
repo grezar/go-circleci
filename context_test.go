@@ -74,3 +74,31 @@ func Test_contexts_Create(t *testing.T) {
 		t.Errorf("Contexts.Create got %+v, want %+v", c, want)
 	}
 }
+
+func Test_contexts_Get(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	contextID := "ctx1"
+
+	mux.HandleFunc(fmt.Sprintf("/context/%s", contextID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"id": "1"}`)
+	})
+
+	ctx := context.Background()
+	c, err := client.Contexts.Get(ctx, contextID)
+	if err != nil {
+		t.Errorf("Contexts.Get got error: %v", err)
+	}
+
+	want := &Context{
+		ID: "1",
+	}
+
+	if !cmp.Equal(c, want) {
+		t.Errorf("Contexts.Get got %+v, want %+v", c, want)
+	}
+}
