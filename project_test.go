@@ -188,3 +188,36 @@ func Test_projects_CreateVariable(t *testing.T) {
 		t.Errorf("Projects.CreateVariable got %+v, want %+v", pv, want)
 	}
 }
+
+func Test_projects_ListVariables(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar", projectSlug), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"items": [{"name": "ENV1"}], "next_page_token": "1"}`)
+	})
+
+	ctx := context.Background()
+	pvl, err := client.Projects.ListVariables(ctx, projectSlug)
+	if err != nil {
+		t.Errorf("Projects.ListVariables got error: %v", err)
+	}
+
+	want := &ProjectVariableList{
+		Items: []*ProjectVariable{
+			{
+				Name: "ENV1",
+			},
+		},
+		NextPageToken: "1",
+	}
+
+	if !cmp.Equal(pvl, want) {
+		t.Errorf("Projects.ListVariables got %+v, want %+v", pvl, want)
+	}
+}

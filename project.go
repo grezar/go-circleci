@@ -13,6 +13,7 @@ type Projects interface {
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
+	ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error)
 }
 
 // projects implementes Projects interface
@@ -207,4 +208,29 @@ func (s *projects) CreateVariable(ctx context.Context, projectSlug string, optio
 	}
 
 	return pv, nil
+}
+
+type ProjectVariableList struct {
+	Items         []*ProjectVariable `json:"items"`
+	NextPageToken string             `json:"next_page_token"`
+}
+
+func (s *projects) ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	u := fmt.Sprintf("project/%s/envvar", projectSlug)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pvl := &ProjectVariableList{}
+	err = s.client.do(ctx, req, pvl)
+	if err != nil {
+		return nil, err
+	}
+
+	return pvl, nil
 }
