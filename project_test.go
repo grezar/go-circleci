@@ -242,3 +242,33 @@ func Test_projects_DeleteVariable(t *testing.T) {
 		t.Errorf("Projects.DeleteVariable got error: %v", err)
 	}
 }
+
+func Test_projects_GetVariable(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	variableName := "ENV1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar/%s", projectSlug, variableName), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"name": "ENV1", "value": "VAL1"}`)
+	})
+
+	ctx := context.Background()
+	pv, err := client.Projects.GetVariable(ctx, projectSlug, variableName)
+	if err != nil {
+		t.Errorf("Projects.GetVariable got error: %v", err)
+	}
+
+	want := &ProjectVariable{
+		Name:  variableName,
+		Value: "VAL1",
+	}
+
+	if !cmp.Equal(pv, want) {
+		t.Errorf("Projects.GetVariable got %+v, want %+v", pv, want)
+	}
+}

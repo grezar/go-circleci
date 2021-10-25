@@ -15,6 +15,7 @@ type Projects interface {
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
 	ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error)
 	DeleteVariable(ctx context.Context, projectSlug, name string) error
+	GetVariable(ctx context.Context, projectSlug, name string) (*ProjectVariable, error)
 }
 
 // projects implementes Projects interface
@@ -252,4 +253,28 @@ func (s *projects) DeleteVariable(ctx context.Context, projectSlug, name string)
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+func (s *projects) GetVariable(ctx context.Context, projectSlug, name string) (*ProjectVariable, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&name) {
+		return nil, ErrRequiredProjectVariableName
+	}
+
+	u := fmt.Sprintf("project/%s/envvar/%s", projectSlug, name)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pv := &ProjectVariable{}
+	err = s.client.do(ctx, req, pv)
+	if err != nil {
+		return nil, err
+	}
+
+	return pv, nil
 }
