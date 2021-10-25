@@ -177,3 +177,37 @@ func Test_contexts_RemoveVariable(t *testing.T) {
 		t.Errorf("Contexts.RemoveVariable got error: %v", err)
 	}
 }
+
+func Test_contexts_AddOrUpdateVariable(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	variableName := "ENV1"
+	variableValue := "VAL1"
+	contextID := "ctx1"
+
+	mux.HandleFunc(fmt.Sprintf("/context/%s/environment-variable/%s", contextID, variableName), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		testBody(t, r, `{"value":"VAL1"}`+"\n")
+		fmt.Fprint(w, `{"variable": "ENV1", "context_id": "ctx1"}`)
+	})
+
+	ctx := context.Background()
+	cv, err := client.Contexts.AddOrUpdateVariable(ctx, contextID, variableName, AddOrUpdateVariableOptions{
+		Value: String(variableValue),
+	})
+	if err != nil {
+		t.Errorf("Contexts.AddOrUpdateVariable got error: %v", err)
+	}
+
+	want := &ContextVariable{
+		Variable:  variableName,
+		ContextID: contextID,
+	}
+
+	if !cmp.Equal(cv, want) {
+		t.Errorf("Contexts.AddOrUpdateVariable got %+v, want %+v", cv, want)
+	}
+}

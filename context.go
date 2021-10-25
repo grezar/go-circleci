@@ -13,6 +13,7 @@ type Contexts interface {
 	Delete(ctx context.Context, contextID string) error
 	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
 	RemoveVariable(ctx context.Context, contextID string, variableName string) error
+	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options AddOrUpdateVariableOptions) (*ContextVariable, error)
 }
 
 // contexts implements Contexts interface
@@ -180,4 +181,43 @@ func (s *contexts) RemoveVariable(ctx context.Context, contextID, variableName s
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+type AddOrUpdateVariableOptions struct {
+	Value *string `json:"value"`
+}
+
+func (o AddOrUpdateVariableOptions) valid() error {
+	if !validString(o.Value) {
+		return ErrRequiredContextVariableValue
+	}
+	return nil
+}
+
+func (s *contexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options AddOrUpdateVariableOptions) (*ContextVariable, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&contextID) {
+		return nil, ErrRequiredContextID
+	}
+
+	if !validString(&variableName) {
+		return nil, ErrRequiredContextVariableName
+	}
+
+	u := fmt.Sprintf("context/%s/environment-variable/%s", contextID, variableName)
+	req, err := s.client.newRequest("PUT", u, options)
+	if err != nil {
+		return nil, err
+	}
+
+	cv := &ContextVariable{}
+	err = s.client.do(ctx, req, cv)
+	if err != nil {
+		return nil, err
+	}
+
+	return cv, nil
 }
