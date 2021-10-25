@@ -11,6 +11,7 @@ type Projects interface {
 	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
 	GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
+	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 }
 
 // projects implementes Projects interface
@@ -141,4 +142,22 @@ func (s *projects) GetCheckoutKey(ctx context.Context, projectSlug, fingerprint 
 	}
 
 	return pck, nil
+}
+
+func (s *projects) DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error {
+	if !validString(&projectSlug) {
+		return ErrRequiredProjectSlug
+	}
+
+	if !validString(&fingerprint) {
+		return ErrRequiredProjectCheckoutKeyFingerprint
+	}
+
+	u := fmt.Sprintf("project/%s/checkout-key/%s", projectSlug, fingerprint)
+	req, err := s.client.newRequest("DELETE", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }

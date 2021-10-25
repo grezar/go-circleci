@@ -132,3 +132,24 @@ func Test_projects_GetCheckoutKey(t *testing.T) {
 		t.Errorf("Projects.GetCheckoutKey got %+v, want %+v", pck, want)
 	}
 }
+
+func Test_projects_DeletetCheckoutKey(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	fingerprint := "xx:yy:zz"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key/%s", projectSlug, fingerprint), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"message": "string"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Projects.DeleteCheckoutKey(ctx, projectSlug, fingerprint)
+	if err != nil {
+		t.Errorf("Projects.DeleteCheckoutKey got error: %v", err)
+	}
+}
