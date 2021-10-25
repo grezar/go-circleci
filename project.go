@@ -12,6 +12,7 @@ type Projects interface {
 	GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
+	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
 }
 
 // projects implementes Projects interface
@@ -160,4 +161,50 @@ func (s *projects) DeleteCheckoutKey(ctx context.Context, projectSlug, fingerpri
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+type ProjectVariable struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+type ProjectCreateVariableOptions struct {
+	Name  *string `json:"name"`
+	Value *string `json:"value"`
+}
+
+func (o ProjectCreateVariableOptions) valid() error {
+	if !validString(o.Name) {
+		return ErrRequiredProjectVariableName
+	}
+
+	if !validString(o.Value) {
+		return ErrRequiredProjectVariableValue
+	}
+
+	return nil
+}
+
+func (s *projects) CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	u := fmt.Sprintf("project/%s/envvar", projectSlug)
+	req, err := s.client.newRequest("POST", u, options)
+	if err != nil {
+		return nil, err
+	}
+
+	pv := &ProjectVariable{}
+	err = s.client.do(ctx, req, pv)
+	if err != nil {
+		return nil, err
+	}
+
+	return pv, nil
 }

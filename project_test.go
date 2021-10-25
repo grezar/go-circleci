@@ -153,3 +153,38 @@ func Test_projects_DeletetCheckoutKey(t *testing.T) {
 		t.Errorf("Projects.DeleteCheckoutKey got error: %v", err)
 	}
 }
+
+func Test_projects_CreateVariable(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	variableName := "ENV1"
+	variableValue := "VAL1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar", projectSlug), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		testBody(t, r, `{"name":"ENV1","value":"VAL1"}`+"\n")
+		fmt.Fprint(w, `{"name": "ENV1", "value": "VAL1"}`)
+	})
+
+	ctx := context.Background()
+	pv, err := client.Projects.CreateVariable(ctx, projectSlug, ProjectCreateVariableOptions{
+		Name:  String(variableName),
+		Value: String(variableValue),
+	})
+	if err != nil {
+		t.Errorf("Projects.CreateVariable got error: %v", err)
+	}
+
+	want := &ProjectVariable{
+		Name:  variableName,
+		Value: variableValue,
+	}
+
+	if !cmp.Equal(pv, want) {
+		t.Errorf("Projects.CreateVariable got %+v, want %+v", pv, want)
+	}
+}

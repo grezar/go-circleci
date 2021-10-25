@@ -13,4 +13,6 @@ var (
 	ErrRequiredProjectSlug                   = errors.New("project slug is required")
 	ErrRequiredProjectCheckoutKeyType        = errors.New("project checkout key type is required")
 	ErrRequiredProjectCheckoutKeyFingerprint = errors.New("project checkout key fingerprint is required")
+	ErrRequiredProjectVariableName           = errors.New("project variable name is required")
+	ErrRequiredProjectVariableValue          = errors.New("project variable value is required")
 )
