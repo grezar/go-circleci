@@ -50,6 +50,7 @@ type Client struct {
 	http    *http.Client
 
 	Contexts Contexts
+	Projects Projects
 }
 
 func NewClient(cfg *Config) (*Client, error) {
@@ -90,6 +91,7 @@ func NewClient(cfg *Config) (*Client, error) {
 	}
 
 	client.Contexts = &contexts{client: client}
+	client.Projects = &projects{client: client}
 
 	return client, nil
 }

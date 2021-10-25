@@ -10,4 +10,5 @@ var (
 	ErrRequiredContextID            = errors.New("context ID is required")
 	ErrRequiredContextVariableName  = errors.New("environment variable name is required")
 	ErrRequiredContextVariableValue = errors.New("missing environment variable value")
+	ErrRequiredProjectSlug          = errors.New("project slug is required")
 )
