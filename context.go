@@ -12,6 +12,7 @@ type Contexts interface {
 	Create(ctx context.Context, options ContextCreateOptions) (*Context, error)
 	Delete(ctx context.Context, contextID string) error
 	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
+	RemoveVariable(ctx context.Context, contextID string, variableName string) error
 }
 
 // contexts implements Contexts interface
@@ -165,4 +166,18 @@ func (s *contexts) ListVariables(ctx context.Context, contextID string) (*Contex
 	}
 
 	return cl, nil
+}
+
+func (s *contexts) RemoveVariable(ctx context.Context, contextID, variableName string) error {
+	if !validString(&contextID) {
+		return ErrRequiredContextID
+	}
+
+	u := fmt.Sprintf("context/%s/environment-variable/%s", contextID, variableName)
+	req, err := s.client.newRequest("DELETE", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }

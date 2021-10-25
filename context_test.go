@@ -156,3 +156,24 @@ func Test_contexts_ListVariables(t *testing.T) {
 		t.Errorf("Contexts.ListVariables got %+v, want %+v", cl, want)
 	}
 }
+
+func Test_contexts_RemoveVariable(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	variableName := "envVar1"
+	contextID := "ctx1"
+
+	mux.HandleFunc(fmt.Sprintf("/context/%s/environment-variable/%s", contextID, variableName), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"message": "string"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Contexts.RemoveVariable(ctx, contextID, variableName)
+	if err != nil {
+		t.Errorf("Contexts.RemoveVariable got error: %v", err)
+	}
+}
