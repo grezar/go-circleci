@@ -36,3 +36,33 @@ func Test_contexts_Me(t *testing.T) {
 		t.Errorf("Users.Me got %+v, want %+v", u, want)
 	}
 }
+
+func Test_contexts_Collaborations(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/collaborations", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `[{"vcs-type": "vcs1", "name": "name1", "avatar_url": "avatar1"}]`)
+	})
+
+	ctx := context.Background()
+	cs, err := client.Users.Collaborations(ctx)
+	if err != nil {
+		t.Errorf("Users.Collaborations got error: %v", err)
+	}
+
+	want := []*Collaboration{
+		{
+			VcsType:   "vcs1",
+			Name:      "name1",
+			AvatarURL: "avatar1",
+		},
+	}
+
+	if !cmp.Equal(cs, want) {
+		t.Errorf("Users.Collaborations got %+v, want %+v", cs, want)
+	}
+}

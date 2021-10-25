@@ -6,6 +6,7 @@ import (
 
 type Users interface {
 	Me(ctx context.Context) (*User, error)
+	Collaborations(ctx context.Context) ([]*Collaboration, error)
 }
 
 // users implements Users interface
@@ -33,4 +34,26 @@ func (s *users) Me(ctx context.Context) (*User, error) {
 	}
 
 	return user, nil
+}
+
+type Collaboration struct {
+	VcsType   string `json:"vcs-type"`
+	Name      string `json:"name"`
+	AvatarURL string `json:"avatar_url"`
+}
+
+func (s *users) Collaborations(ctx context.Context) ([]*Collaboration, error) {
+	u := "me/collaborations"
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var cs []*Collaboration
+	err = s.client.do(ctx, req, &cs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cs, nil
 }
