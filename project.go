@@ -9,7 +9,7 @@ import (
 type Projects interface {
 	Get(ctx context.Context, projectSlug string) (*Project, error)
 	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
-	GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
+	ListCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
@@ -104,7 +104,7 @@ type ProjectCheckoutKeyList struct {
 	NextPageToken string                `json:"next_page_token"`
 }
 
-func (s *projects) GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error) {
+func (s *projects) ListCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error) {
 	if !validString(&projectSlug) {
 		return nil, ErrRequiredProjectSlug
 	}

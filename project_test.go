@@ -70,7 +70,7 @@ func Test_projects_CreateCheckoutKey(t *testing.T) {
 	}
 }
 
-func Test_projects_GetAllCheckoutKeys(t *testing.T) {
+func Test_projects_ListCheckoutKeys(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -85,9 +85,9 @@ func Test_projects_GetAllCheckoutKeys(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	pckl, err := client.Projects.GetAllCheckoutKeys(ctx, projectSlug)
+	pckl, err := client.Projects.ListCheckoutKeys(ctx, projectSlug)
 	if err != nil {
-		t.Errorf("Projects.GetAllCheckoutKeys got error: %v", err)
+		t.Errorf("Projects.ListCheckoutKeys got error: %v", err)
 	}
 
 	want := &ProjectCheckoutKeyList{
@@ -100,7 +100,7 @@ func Test_projects_GetAllCheckoutKeys(t *testing.T) {
 	}
 
 	if !cmp.Equal(pckl, want) {
-		t.Errorf("Projects.GetAllCheckoutKeys got %+v, want %+v", pckl, want)
+		t.Errorf("Projects.ListCheckoutKeys got %+v, want %+v", pckl, want)
 	}
 }
 
