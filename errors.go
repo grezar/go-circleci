@@ -7,4 +7,5 @@ var (
 	ErrNotFound     = errors.New("not found")
 
 	ErrRequiredEitherIDOrSlug = errors.New("either organization ID or slug is required")
+	ErrRequiredContextID      = errors.New("context ID is required")
 )
