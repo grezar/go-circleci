@@ -9,6 +9,7 @@ import (
 type Projects interface {
 	Get(ctx context.Context, projectSlug string) (*Project, error)
 	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
+	GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
 }
 
 // projects implementes Projects interface
@@ -90,4 +91,29 @@ func (s *projects) CreateCheckoutKey(ctx context.Context, projectSlug string, op
 	}
 
 	return pck, nil
+}
+
+type ProjectCheckoutKeyList struct {
+	Items         []*ProjectCheckoutKey `json:"items"`
+	NextPageToken string                `json:"next_page_token"`
+}
+
+func (s *projects) GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	u := fmt.Sprintf("project/%s/checkout-key", projectSlug)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pckl := &ProjectCheckoutKeyList{}
+	err = s.client.do(ctx, req, pckl)
+	if err != nil {
+		return nil, err
+	}
+
+	return pckl, nil
 }

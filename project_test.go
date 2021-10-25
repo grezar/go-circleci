@@ -69,3 +69,37 @@ func Test_projects_CreateCheckoutKey(t *testing.T) {
 		t.Errorf("Projects.CreateCheckoutKey got %+v, want %+v", pck, want)
 	}
 }
+
+func Test_projects_GetAllCheckoutKeys(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	keyType := "deploy-key"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key", projectSlug), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"items": [{"type": "deploy-key"}], "next_page_token": "1"}`)
+	})
+
+	ctx := context.Background()
+	pckl, err := client.Projects.GetAllCheckoutKeys(ctx, projectSlug)
+	if err != nil {
+		t.Errorf("Projects.GetAllCheckoutKeys got error: %v", err)
+	}
+
+	want := &ProjectCheckoutKeyList{
+		Items: []*ProjectCheckoutKey{
+			{
+				Type: keyType,
+			},
+		},
+		NextPageToken: "1",
+	}
+
+	if !cmp.Equal(pckl, want) {
+		t.Errorf("Projects.GetAllCheckoutKeys got %+v, want %+v", pckl, want)
+	}
+}
