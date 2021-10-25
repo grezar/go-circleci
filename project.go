@@ -10,6 +10,7 @@ type Projects interface {
 	Get(ctx context.Context, projectSlug string) (*Project, error)
 	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
 	GetAllCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
+	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 }
 
 // projects implementes Projects interface
@@ -116,4 +117,28 @@ func (s *projects) GetAllCheckoutKeys(ctx context.Context, projectSlug string) (
 	}
 
 	return pckl, nil
+}
+
+func (s *projects) GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&fingerprint) {
+		return nil, ErrRequiredProjectCheckoutKeyFingerprint
+	}
+
+	u := fmt.Sprintf("project/%s/checkout-key/%s", projectSlug, fingerprint)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pck := &ProjectCheckoutKey{}
+	err = s.client.do(ctx, req, pck)
+	if err != nil {
+		return nil, err
+	}
+
+	return pck, nil
 }

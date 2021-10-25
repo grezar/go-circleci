@@ -103,3 +103,32 @@ func Test_projects_GetAllCheckoutKeys(t *testing.T) {
 		t.Errorf("Projects.GetAllCheckoutKeys got %+v, want %+v", pckl, want)
 	}
 }
+
+func Test_projects_GetCheckoutKey(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	fingerprint := "xx:yy:zz"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key/%s", projectSlug, fingerprint), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"fingerprint": "xx:yy:zz"}`)
+	})
+
+	ctx := context.Background()
+	pck, err := client.Projects.GetCheckoutKey(ctx, projectSlug, fingerprint)
+	if err != nil {
+		t.Errorf("Projects.GetCheckoutKey got error: %v", err)
+	}
+
+	want := &ProjectCheckoutKey{
+		Fingerprint: fingerprint,
+	}
+
+	if !cmp.Equal(pck, want) {
+		t.Errorf("Projects.GetCheckoutKey got %+v, want %+v", pck, want)
+	}
+}
