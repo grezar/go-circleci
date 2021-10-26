@@ -53,6 +53,7 @@ type Client struct {
 	Projects  Projects
 	Users     Users
 	Workflows Workflows
+	Pipelines Pipelines
 }
 
 func NewClient(cfg *Config) (*Client, error) {
@@ -96,6 +97,7 @@ func NewClient(cfg *Config) (*Client, error) {
 	client.Projects = &projects{client: client}
 	client.Users = &users{client: client}
 	client.Workflows = &workflows{client: client}
+	client.Pipelines = &pipelines{client: client}
 
 	return client, nil
 }
