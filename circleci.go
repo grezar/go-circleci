@@ -49,9 +49,10 @@ type Client struct {
 	headers http.Header
 	http    *http.Client
 
-	Contexts Contexts
-	Projects Projects
-	Users    Users
+	Contexts  Contexts
+	Projects  Projects
+	Users     Users
+	Workflows Workflows
 }
 
 func NewClient(cfg *Config) (*Client, error) {
@@ -94,6 +95,7 @@ func NewClient(cfg *Config) (*Client, error) {
 	client.Contexts = &contexts{client: client}
 	client.Projects = &projects{client: client}
 	client.Users = &users{client: client}
+	client.Workflows = &workflows{client: client}
 
 	return client, nil
 }

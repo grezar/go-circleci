@@ -16,4 +16,5 @@ var (
 	ErrRequiredProjectVariableName           = errors.New("project variable name is required")
 	ErrRequiredProjectVariableValue          = errors.New("project variable value is required")
 	ErrRequiredUsersUserID                   = errors.New("user id is required")
+	ErrRequiredWorkflowsWorkflowID           = errors.New("workflow id is required")
 )
