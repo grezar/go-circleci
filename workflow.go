@@ -8,6 +8,7 @@ import (
 
 type Workflows interface {
 	Get(ctx context.Context, id string) (*Workflow, error)
+	ApproveJob(ctx context.Context, id, approvalRequestID string) error
 }
 
 // workflows implements Workflows interface
@@ -48,4 +49,22 @@ func (s *workflows) Get(ctx context.Context, id string) (*Workflow, error) {
 	}
 
 	return w, nil
+}
+
+func (s *workflows) ApproveJob(ctx context.Context, id, approvalRequestID string) error {
+	if !validString(&id) {
+		return ErrRequiredWorkflowsWorkflowID
+	}
+
+	if !validString(&approvalRequestID) {
+		return ErrRequiredWorkflowsApprovalRequestID
+	}
+
+	u := fmt.Sprintf("workflow/%s/approve/%s", id, approvalRequestID)
+	req, err := s.client.newRequest("POST", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }

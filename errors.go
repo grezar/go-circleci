@@ -17,4 +17,5 @@ var (
 	ErrRequiredProjectVariableValue          = errors.New("project variable value is required")
 	ErrRequiredUsersUserID                   = errors.New("user id is required")
 	ErrRequiredWorkflowsWorkflowID           = errors.New("workflow id is required")
+	ErrRequiredWorkflowsApprovalRequestID    = errors.New("approval request id (the id of the job being approved) is required")
 )

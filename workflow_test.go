@@ -36,3 +36,24 @@ func Test_workflows_Get(t *testing.T) {
 		t.Errorf("Workflows.Get got %+v, want %+v", w, want)
 	}
 }
+
+func Test_workflows_ApproveJob(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	workflowID := "workflow1"
+	jobID := "job1"
+
+	mux.HandleFunc(fmt.Sprintf("/workflow/%s/approve/%s", workflowID, jobID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"message": "string"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Workflows.ApproveJob(ctx, workflowID, jobID)
+	if err != nil {
+		t.Errorf("Workflows.ApproveJob got error: %v", err)
+	}
+}
