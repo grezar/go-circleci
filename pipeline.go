@@ -7,6 +7,7 @@ import (
 
 type Pipelines interface {
 	List(ctx context.Context, options PipelineListOptions) (*PipelineList, error)
+	Continue(ctx context.Context, options PipelineContinueOptions) error
 }
 
 type pipelines struct {
@@ -92,4 +93,36 @@ func (s *pipelines) List(ctx context.Context, options PipelineListOptions) (*Pip
 	}
 
 	return pl, nil
+}
+
+type PipelineContinueOptions struct {
+	ContinuationKey *string                `json:"continuation-key"`
+	Configuration   *string                `json:"configuration"`
+	Parameters      map[string]interface{} `json:"parameters,omitempty"`
+}
+
+func (o PipelineContinueOptions) valid() error {
+	if !validString(o.ContinuationKey) {
+		return ErrRequiredPipelineContinuationKey
+	}
+
+	if !validString(o.Configuration) {
+		return ErrRequiredPipelineConfiguration
+	}
+
+	return nil
+}
+
+func (s *pipelines) Continue(ctx context.Context, options PipelineContinueOptions) error {
+	if err := options.valid(); err != nil {
+		return err
+	}
+
+	u := "pipeline/continue"
+	req, err := s.client.newRequest("POST", u, &options)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }
