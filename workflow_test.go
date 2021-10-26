@@ -110,3 +110,30 @@ func Test_workflows_ListJobs(t *testing.T) {
 		t.Errorf("Workflows.ListJobs got %+v, want %+v", jl, want)
 	}
 }
+
+func Test_workflows_Rerun(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	workflowID := "workflow1"
+
+	mux.HandleFunc(fmt.Sprintf("/workflow/%s/rerun", workflowID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		testBody(t, r, `{"jobs":["xxx-yyy-zzz"],"from_failed":true,"sparse_tree":false}`+"\n")
+		fmt.Fprint(w, `{"message": "string"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Workflows.Rerun(ctx, workflowID, WorkflowRerunOptions{
+		Jobs: []*string{
+			String("xxx-yyy-zzz"),
+		},
+		FromFailed: Bool(true),
+		SparseTree: Bool(false),
+	})
+	if err != nil {
+		t.Errorf("Workflows.Rerun got error: %v", err)
+	}
+}

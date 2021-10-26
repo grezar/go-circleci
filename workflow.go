@@ -11,6 +11,7 @@ type Workflows interface {
 	ApproveJob(ctx context.Context, id, approvalRequestID string) error
 	Cancel(ctx context.Context, id string) error
 	ListJobs(ctx context.Context, id string) (*JobList, error)
+	Rerun(ctx context.Context, id string, options WorkflowRerunOptions) error
 }
 
 // workflows implements Workflows interface
@@ -123,4 +124,29 @@ func (s *workflows) ListJobs(ctx context.Context, id string) (*JobList, error) {
 	}
 
 	return jl, nil
+}
+
+type WorkflowRerunOptions struct {
+	Jobs       []*string `json:"jobs,omitempty"`
+	FromFailed *bool     `json:"from_failed,omitempty"`
+	SparseTree *bool     `json:"sparse_tree,omitempty"`
+}
+
+func (o WorkflowRerunOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (s *workflows) Rerun(ctx context.Context, id string, options WorkflowRerunOptions) error {
+	if !validString(&id) {
+		return ErrRequiredWorkflowsWorkflowID
+	}
+
+	u := fmt.Sprintf("workflow/%s/rerun", id)
+	req, err := s.client.newRequest("POST", u, options)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }
