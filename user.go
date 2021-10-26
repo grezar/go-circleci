@@ -2,11 +2,13 @@ package circleci
 
 import (
 	"context"
+	"fmt"
 )
 
 type Users interface {
 	Me(ctx context.Context) (*User, error)
 	Collaborations(ctx context.Context) ([]*Collaboration, error)
+	GetUser(ctx context.Context, id string) (*User, error)
 }
 
 // users implements Users interface
@@ -56,4 +58,23 @@ func (s *users) Collaborations(ctx context.Context) ([]*Collaboration, error) {
 	}
 
 	return cs, nil
+}
+
+func (s *users) GetUser(ctx context.Context, id string) (*User, error) {
+	if !validString(&id) {
+		return nil, ErrRequiredUsersUserID
+	}
+	u := fmt.Sprintf("user/%s", id)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	user := &User{}
+	err = s.client.do(ctx, req, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
