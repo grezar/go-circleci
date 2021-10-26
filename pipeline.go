@@ -2,12 +2,14 @@ package circleci
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
 type Pipelines interface {
 	List(ctx context.Context, options PipelineListOptions) (*PipelineList, error)
 	Continue(ctx context.Context, options PipelineContinueOptions) error
+	Get(ctx context.Context, pipelineID string) (*Pipeline, error)
 }
 
 type pipelines struct {
@@ -125,4 +127,23 @@ func (s *pipelines) Continue(ctx context.Context, options PipelineContinueOption
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+func (s *pipelines) Get(ctx context.Context, pipelineID string) (*Pipeline, error) {
+	if !validString(&pipelineID) {
+		return nil, ErrRequiredPipelinePipelineID
+	}
+	u := fmt.Sprintf("pipeline/%s", pipelineID)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	p := &Pipeline{}
+	err = s.client.do(ctx, req, p)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
 }

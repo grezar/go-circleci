@@ -70,3 +70,31 @@ func Test_pipelines_Continue(t *testing.T) {
 		t.Errorf("Pipelines.Continue got error: %v", err)
 	}
 }
+
+func Test_pipelines_Get(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	pipelineID := "pipeline1"
+
+	mux.HandleFunc(fmt.Sprintf("/pipeline/%s", pipelineID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"id": "1"}`)
+	})
+
+	ctx := context.Background()
+	p, err := client.Pipelines.Get(ctx, pipelineID)
+	if err != nil {
+		t.Errorf("Pipeline.Get got error: %v", err)
+	}
+
+	want := &Pipeline{
+		ID: "1",
+	}
+
+	if !cmp.Equal(p, want) {
+		t.Errorf("Pipeline.Get got %+v, want %+v", p, want)
+	}
+}

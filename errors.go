@@ -20,4 +20,5 @@ var (
 	ErrRequiredWorkflowsApprovalRequestID    = errors.New("approval request id (the id of the job being approved) is required")
 	ErrRequiredPipelineContinuationKey       = errors.New("pipeline continuation key is required")
 	ErrRequiredPipelineConfiguration         = errors.New("pipeline configuration is required")
+	ErrRequiredPipelinePipelineID            = errors.New("pipeline ID is required")
 )
