@@ -77,3 +77,36 @@ func Test_workflows_Cancel(t *testing.T) {
 		t.Errorf("Workflows.Cancel got error: %v", err)
 	}
 }
+
+func Test_workflows_ListJobs(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	workflowID := "workflow1"
+
+	mux.HandleFunc(fmt.Sprintf("/workflow/%s/job", workflowID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"items": [{"id": "1"}], "next_page_token": "1"}`)
+	})
+
+	ctx := context.Background()
+	jl, err := client.Workflows.ListJobs(ctx, workflowID)
+	if err != nil {
+		t.Errorf("Workflows.ListJobs got error: %v", err)
+	}
+
+	want := &JobList{
+		Items: []*Job{
+			{
+				ID: "1",
+			},
+		},
+		NextPageToken: "1",
+	}
+
+	if !cmp.Equal(jl, want) {
+		t.Errorf("Workflows.ListJobs got %+v, want %+v", jl, want)
+	}
+}

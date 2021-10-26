@@ -10,6 +10,7 @@ type Workflows interface {
 	Get(ctx context.Context, id string) (*Workflow, error)
 	ApproveJob(ctx context.Context, id, approvalRequestID string) error
 	Cancel(ctx context.Context, id string) error
+	ListJobs(ctx context.Context, id string) (*JobList, error)
 }
 
 // workflows implements Workflows interface
@@ -18,18 +19,18 @@ type workflows struct {
 }
 
 type Workflow struct {
-	PipelineID     string    `json:"pipeline_id"`
-	CanceledBy     string    `json:"canceled_by"`
-	ID             string    `json:"id"`
-	Name           string    `json:"name"`
-	ProjectSlug    string    `json:"project_slug"`
-	ErroredBy      string    `json:"errored_by"`
-	Tag            string    `json:"tag"`
-	Status         string    `json:"status"`
-	StartedBy      string    `json:"started_by"`
-	PipelineNumber int64     `json:"pipeline_number"`
-	CreatedAt      time.Time `json:"created_at"`
-	StoppedAt      time.Time `json:"stopped_at"`
+	PipelineID     string      `json:"pipeline_id"`
+	CanceledBy     string      `json:"canceled_by"`
+	ID             string      `json:"id"`
+	Name           string      `json:"name"`
+	ProjectSlug    string      `json:"project_slug"`
+	ErroredBy      string      `json:"errored_by"`
+	Tag            string      `json:"tag"`
+	Status         interface{} `json:"status"`
+	StartedBy      string      `json:"started_by"`
+	PipelineNumber int64       `json:"pipeline_number"`
+	CreatedAt      time.Time   `json:"created_at"`
+	StoppedAt      time.Time   `json:"stopped_at"`
 }
 
 func (s *workflows) Get(ctx context.Context, id string) (*Workflow, error) {
@@ -82,4 +83,44 @@ func (s *workflows) Cancel(ctx context.Context, id string) error {
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+type JobList struct {
+	Items         []*Job `json:"items"`
+	NextPageToken string `json:"next_page_token"`
+}
+
+type Job struct {
+	ID                string    `json:"id"`
+	CanceledBy        string    `json:"canceled_by"`
+	Dependencies      []*string `json:"dependencies"`
+	JobNumber         int64     `json:"job_number"`
+	Name              string    `json:"name"`
+	ApprovedBy        string    `json:"approved_by"`
+	ProjectSlug       string    `json:"project_slug"`
+	Status            string    `json:"status"`
+	Type              string    `json:"type"`
+	StartedAt         time.Time `json:"started_at"`
+	StoppedAt         time.Time `json:"stopped_at"`
+	ApprovalRequestID string    `json:"approval_request_id"`
+}
+
+func (s *workflows) ListJobs(ctx context.Context, id string) (*JobList, error) {
+	if !validString(&id) {
+		return nil, ErrRequiredWorkflowsWorkflowID
+	}
+
+	u := fmt.Sprintf("workflow/%s/job", id)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	jl := &JobList{}
+	err = s.client.do(ctx, req, jl)
+	if err != nil {
+		return nil, err
+	}
+
+	return jl, nil
 }
