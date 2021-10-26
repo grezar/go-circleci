@@ -57,3 +57,23 @@ func Test_workflows_ApproveJob(t *testing.T) {
 		t.Errorf("Workflows.ApproveJob got error: %v", err)
 	}
 }
+
+func Test_workflows_Cancel(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	workflowID := "workflow1"
+
+	mux.HandleFunc(fmt.Sprintf("/workflow/%s/cancel", workflowID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"message": "string"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Workflows.Cancel(ctx, workflowID)
+	if err != nil {
+		t.Errorf("Workflows.Cancel got error: %v", err)
+	}
+}

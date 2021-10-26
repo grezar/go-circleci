@@ -9,6 +9,7 @@ import (
 type Workflows interface {
 	Get(ctx context.Context, id string) (*Workflow, error)
 	ApproveJob(ctx context.Context, id, approvalRequestID string) error
+	Cancel(ctx context.Context, id string) error
 }
 
 // workflows implements Workflows interface
@@ -61,6 +62,20 @@ func (s *workflows) ApproveJob(ctx context.Context, id, approvalRequestID string
 	}
 
 	u := fmt.Sprintf("workflow/%s/approve/%s", id, approvalRequestID)
+	req, err := s.client.newRequest("POST", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
+}
+
+func (s *workflows) Cancel(ctx context.Context, id string) error {
+	if !validString(&id) {
+		return ErrRequiredWorkflowsWorkflowID
+	}
+
+	u := fmt.Sprintf("workflow/%s/cancel", id)
 	req, err := s.client.newRequest("POST", u, nil)
 	if err != nil {
 		return err
