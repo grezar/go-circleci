@@ -10,6 +10,7 @@ type Pipelines interface {
 	List(ctx context.Context, options PipelineListOptions) (*PipelineList, error)
 	Continue(ctx context.Context, options PipelineContinueOptions) error
 	Get(ctx context.Context, pipelineID string) (*Pipeline, error)
+	GetConfig(ctx context.Context, pipelineID string) (*PipelineConfig, error)
 }
 
 type pipelines struct {
@@ -146,4 +147,30 @@ func (s *pipelines) Get(ctx context.Context, pipelineID string) (*Pipeline, erro
 	}
 
 	return p, nil
+}
+
+type PipelineConfig struct {
+	Source              string `json:"source"`
+	Compiled            string `json:"compiled"`
+	SetupConfig         string `json:"setup-config"`
+	CompiledSetupConfig string `json:"compiled-setup-config"`
+}
+
+func (s *pipelines) GetConfig(ctx context.Context, pipelineID string) (*PipelineConfig, error) {
+	if !validString(&pipelineID) {
+		return nil, ErrRequiredPipelinePipelineID
+	}
+	u := fmt.Sprintf("pipeline/%s/config", pipelineID)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pc := &PipelineConfig{}
+	err = s.client.do(ctx, req, pc)
+	if err != nil {
+		return nil, err
+	}
+
+	return pc, nil
 }

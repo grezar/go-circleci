@@ -98,3 +98,32 @@ func Test_pipelines_Get(t *testing.T) {
 		t.Errorf("Pipeline.Get got %+v, want %+v", p, want)
 	}
 }
+
+func Test_pipelines_GetConfig(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	pipelineID := "pipeline1"
+
+	mux.HandleFunc(fmt.Sprintf("/pipeline/%s/config", pipelineID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"source": "a", "compiled": "b"}`)
+	})
+
+	ctx := context.Background()
+	p, err := client.Pipelines.GetConfig(ctx, pipelineID)
+	if err != nil {
+		t.Errorf("Pipeline.GetConfig got error: %v", err)
+	}
+
+	want := &PipelineConfig{
+		Source:   "a",
+		Compiled: "b",
+	}
+
+	if !cmp.Equal(p, want) {
+		t.Errorf("Pipeline.GetConfig got %+v, want %+v", p, want)
+	}
+}
