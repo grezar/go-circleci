@@ -11,6 +11,7 @@ type Pipelines interface {
 	Continue(ctx context.Context, options PipelineContinueOptions) error
 	Get(ctx context.Context, pipelineID string) (*Pipeline, error)
 	GetConfig(ctx context.Context, pipelineID string) (*PipelineConfig, error)
+	ListWorkflows(ctx context.Context, pipelineID string, options PipelineListWorkflowsOptions) (*WorkflowList, error)
 }
 
 type pipelines struct {
@@ -173,4 +174,42 @@ func (s *pipelines) GetConfig(ctx context.Context, pipelineID string) (*Pipeline
 	}
 
 	return pc, nil
+}
+
+type WorkflowList struct {
+	Items         []*Workflow `json:"items"`
+	NextPageToken string      `json:"next_page_token"`
+}
+
+type PipelineListWorkflowsOptions struct {
+	PageToken *string `url:"page-token,omitempty"`
+}
+
+func (o PipelineListWorkflowsOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (s *pipelines) ListWorkflows(ctx context.Context, pipelineID string, options PipelineListWorkflowsOptions) (*WorkflowList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&pipelineID) {
+		return nil, ErrRequiredPipelinePipelineID
+	}
+
+	u := fmt.Sprintf("pipeline/%s/workflow", pipelineID)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	wl := &WorkflowList{}
+	err = s.client.do(ctx, req, wl)
+	if err != nil {
+		return nil, err
+	}
+
+	return wl, nil
 }
