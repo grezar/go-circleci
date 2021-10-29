@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  test:
     working_directory: ~/repo
     docker:
       - image: circleci/golang:1.17.2
@@ -24,8 +24,16 @@ jobs:
             gotestsum --junitfile /tmp/test-reports/unit-tests.xml
       - store_test_results:
           path: /tmp/test-reports
+  lint:
+    working_directory: ~/repo
+    docker:
+      - image: golangci/golangci-lint:v1.42.1-alpine
+    steps:
+      - checkout
+      - run: golangci-lint run
 
 workflows:
-  sample:
+  test:
     jobs:
-      - build
+      - test
+      - lint
