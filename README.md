@@ -31,7 +31,7 @@ if err != nil {
 	log.Fatal(err)
 }
 
-contexts, err := client.Contexts.List(context.Background(), ContextListOptions{
+contexts, err := client.Contexts.List(context.Background(), circleci.ContextListOptions{
 	OwnerSlug: circleci.String("org"),
 })
 if err != nil {
