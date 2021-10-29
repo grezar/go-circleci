@@ -58,3 +58,38 @@ func Test_jobs_Cancel(t *testing.T) {
 		t.Errorf("Jobs.Cancel got error: %v", err)
 	}
 }
+
+func Test_jobs_ListArtifacts(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	jobNumber := "1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/%s/artifacts", projectSlug, jobNumber), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"items": [{"path": "path", "node_index": 0, "url": "url"}]}`)
+	})
+
+	ctx := context.Background()
+	j, err := client.Jobs.ListArtifacts(ctx, projectSlug, jobNumber)
+	if err != nil {
+		t.Errorf("Jobs.ListArtifacts got error: %v", err)
+	}
+
+	want := &ArtifactList{
+		Items: []*Artifact{
+			{
+				Path:      "path",
+				NodeIndex: 0,
+				URL:       "url",
+			},
+		},
+	}
+
+	if !cmp.Equal(j, want) {
+		t.Errorf("Jobs.ListArtifacts got %+v, want %+v", j, want)
+	}
+}

@@ -9,6 +9,7 @@ import (
 type Jobs interface {
 	Get(ctx context.Context, projectSlug string, jobNumber string) (*Job, error)
 	Cancel(ctx context.Context, projectSlug string, jobNumber string) error
+	ListArtifacts(ctx context.Context, projectSlug string, jobNumber string) (*ArtifactList, error)
 }
 
 type jobs struct {
@@ -115,4 +116,39 @@ func (s *jobs) Cancel(ctx context.Context, projectSlug string, jobNumber string)
 	}
 
 	return s.client.do(ctx, req, nil)
+}
+
+type ArtifactList struct {
+	Items         []*Artifact `json:"items"`
+	NextPageToken string      `json:"next_page_token"`
+}
+
+type Artifact struct {
+	Path      string `json:"path"`
+	NodeIndex int64  `json:"node_index"`
+	URL       string `json:"url"`
+}
+
+func (s *jobs) ListArtifacts(ctx context.Context, projectSlug string, jobNumber string) (*ArtifactList, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&jobNumber) {
+		return nil, ErrRequiredJobNumber
+	}
+
+	u := fmt.Sprintf("project/%s/%s/artifacts", projectSlug, jobNumber)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	al := &ArtifactList{}
+	err = s.client.do(ctx, req, al)
+	if err != nil {
+		return nil, err
+	}
+
+	return al, nil
 }
