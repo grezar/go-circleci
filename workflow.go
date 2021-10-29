@@ -138,6 +138,10 @@ func (o WorkflowRerunOptions) valid() error {
 }
 
 func (s *workflows) Rerun(ctx context.Context, id string, options WorkflowRerunOptions) error {
+	if err := options.valid(); err != nil {
+		return err
+	}
+
 	if !validString(&id) {
 		return ErrRequiredWorkflowsWorkflowID
 	}
