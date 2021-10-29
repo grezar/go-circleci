@@ -272,3 +272,41 @@ func Test_projects_GetVariable(t *testing.T) {
 		t.Errorf("Projects.GetVariable got %+v, want %+v", pv, want)
 	}
 }
+
+func Test_projects_TriggerPipeline(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline", projectSlug), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		testBody(t, r, `{"branch":"main","tag":"v0.1.0","parameters":{"deploy_prod":true}}`+"\n")
+		fmt.Fprint(w, `{"id": "1","state": "created", "number": 0}`)
+	})
+
+	ctx := context.Background()
+	p, err := client.Projects.TriggerPipeline(ctx, projectSlug, ProjectTriggerPipelineOptions{
+		Branch: String("main"),
+		Tag:    String("v0.1.0"),
+		Parameters: map[string]interface{}{
+			"deploy_prod": true,
+		},
+	})
+
+	if err != nil {
+		t.Errorf("Projects.TriggerPipeline got error: %v", err)
+	}
+
+	want := &Pipeline{
+		ID:     "1",
+		State:  "created",
+		Number: 0,
+	}
+
+	if !cmp.Equal(p, want) {
+		t.Errorf("Projects.TriggerPipeline got %+v, want %+v", p, want)
+	}
+}
