@@ -10,6 +10,7 @@ type Jobs interface {
 	Get(ctx context.Context, projectSlug string, jobNumber string) (*Job, error)
 	Cancel(ctx context.Context, projectSlug string, jobNumber string) error
 	ListArtifacts(ctx context.Context, projectSlug string, jobNumber string) (*ArtifactList, error)
+	ListTestMetadata(ctx context.Context, projectSlug string, jobNumber string) (*TestMetadataList, error)
 }
 
 type jobs struct {
@@ -151,4 +152,43 @@ func (s *jobs) ListArtifacts(ctx context.Context, projectSlug string, jobNumber 
 	}
 
 	return al, nil
+}
+
+type TestMetadataList struct {
+	Items         []*TestMetadata `json:"items"`
+	NextPageToken string          `json:"next_page_token"`
+}
+
+type TestMetadata struct {
+	Message   string `json:"message"`
+	Source    string `json:"source"`
+	RunTime   string `json:"run_time"`
+	File      string `json:"file"`
+	Result    string `json:"result"`
+	Name      string `json:"name"`
+	Classname string `json:"classname"`
+}
+
+func (s *jobs) ListTestMetadata(ctx context.Context, projectSlug string, jobNumber string) (*TestMetadataList, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&jobNumber) {
+		return nil, ErrRequiredJobNumber
+	}
+
+	u := fmt.Sprintf("project/%s/%s/tests", projectSlug, jobNumber)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	tml := &TestMetadataList{}
+	err = s.client.do(ctx, req, tml)
+	if err != nil {
+		return nil, err
+	}
+
+	return tml, nil
 }
