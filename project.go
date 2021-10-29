@@ -17,6 +17,7 @@ type Projects interface {
 	DeleteVariable(ctx context.Context, projectSlug, name string) error
 	GetVariable(ctx context.Context, projectSlug, name string) (*ProjectVariable, error)
 	TriggerPipeline(ctx context.Context, projectSlug string, options ProjectTriggerPipelineOptions) (*Pipeline, error)
+	ListPipelines(ctx context.Context, projectSlug string, options ProjectListPipelinesOptions) (*PipelineList, error)
 }
 
 // projects implementes Projects interface
@@ -313,4 +314,38 @@ func (s *projects) TriggerPipeline(ctx context.Context, projectSlug string, opti
 	}
 
 	return p, nil
+}
+
+type ProjectListPipelinesOptions struct {
+	Branch    *string `url:"branch,omitempty"`
+	PageToken *string `url:"page-token,omitempty"`
+}
+
+func (o ProjectListPipelinesOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (s *projects) ListPipelines(ctx context.Context, projectSlug string, options ProjectListPipelinesOptions) (*PipelineList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	u := fmt.Sprintf("/project/%s/pipeline", projectSlug)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	pl := &PipelineList{}
+	err = s.client.do(ctx, req, pl)
+	if err != nil {
+		return nil, err
+	}
+
+	return pl, nil
 }

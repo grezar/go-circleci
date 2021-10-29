@@ -310,3 +310,42 @@ func Test_projects_TriggerPipeline(t *testing.T) {
 		t.Errorf("Projects.TriggerPipeline got %+v, want %+v", p, want)
 	}
 }
+
+func Test_projects_ListPipelines(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline", projectSlug), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		testQuery(t, r, "branch", "main")
+		fmt.Fprint(w, `{"items": [{"id": "1", "trigger": {"type": "explicit"}}], "next_page_token": "1"}`)
+	})
+
+	ctx := context.Background()
+	pl, err := client.Projects.ListPipelines(ctx, projectSlug, ProjectListPipelinesOptions{
+		Branch: String("main"),
+	})
+	if err != nil {
+		t.Errorf("Projects.ListPipelines got error: %v", err)
+	}
+
+	want := &PipelineList{
+		Items: []*Pipeline{
+			{
+				ID: "1",
+				Trigger: &Trigger{
+					Type: "explicit",
+				},
+			},
+		},
+		NextPageToken: "1",
+	}
+
+	if !cmp.Equal(pl, want) {
+		t.Errorf("Projects.ListPipelines got %+v, want %+v", pl, want)
+	}
+}
