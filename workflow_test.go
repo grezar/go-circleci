@@ -78,7 +78,7 @@ func Test_workflows_Cancel(t *testing.T) {
 	}
 }
 
-func Test_workflows_ListJobs(t *testing.T) {
+func Test_workflows_ListWorkflowJobs(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -92,13 +92,13 @@ func Test_workflows_ListJobs(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	jl, err := client.Workflows.ListJobs(ctx, workflowID)
+	jl, err := client.Workflows.ListWorkflowJobs(ctx, workflowID)
 	if err != nil {
-		t.Errorf("Workflows.ListJobs got error: %v", err)
+		t.Errorf("Workflows.ListWorkflowJobs got error: %v", err)
 	}
 
-	want := &JobList{
-		Items: []*Job{
+	want := &WorkflowJobList{
+		Items: []*WorkflowJob{
 			{
 				ID: "1",
 			},
@@ -107,7 +107,7 @@ func Test_workflows_ListJobs(t *testing.T) {
 	}
 
 	if !cmp.Equal(jl, want) {
-		t.Errorf("Workflows.ListJobs got %+v, want %+v", jl, want)
+		t.Errorf("Workflows.ListWorkflowJobs got %+v, want %+v", jl, want)
 	}
 }
 

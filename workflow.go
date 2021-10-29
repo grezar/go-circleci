@@ -10,7 +10,7 @@ type Workflows interface {
 	Get(ctx context.Context, id string) (*Workflow, error)
 	ApproveJob(ctx context.Context, id, approvalRequestID string) error
 	Cancel(ctx context.Context, id string) error
-	ListJobs(ctx context.Context, id string) (*JobList, error)
+	ListWorkflowJobs(ctx context.Context, id string) (*WorkflowJobList, error)
 	Rerun(ctx context.Context, id string, options WorkflowRerunOptions) error
 }
 
@@ -86,12 +86,12 @@ func (s *workflows) Cancel(ctx context.Context, id string) error {
 	return s.client.do(ctx, req, nil)
 }
 
-type JobList struct {
-	Items         []*Job `json:"items"`
-	NextPageToken string `json:"next_page_token"`
+type WorkflowJobList struct {
+	Items         []*WorkflowJob `json:"items"`
+	NextPageToken string         `json:"next_page_token"`
 }
 
-type Job struct {
+type WorkflowJob struct {
 	ID                string    `json:"id"`
 	CanceledBy        string    `json:"canceled_by"`
 	Dependencies      []*string `json:"dependencies"`
@@ -106,7 +106,7 @@ type Job struct {
 	ApprovalRequestID string    `json:"approval_request_id"`
 }
 
-func (s *workflows) ListJobs(ctx context.Context, id string) (*JobList, error) {
+func (s *workflows) ListWorkflowJobs(ctx context.Context, id string) (*WorkflowJobList, error) {
 	if !validString(&id) {
 		return nil, ErrRequiredWorkflowsWorkflowID
 	}
@@ -117,7 +117,7 @@ func (s *workflows) ListJobs(ctx context.Context, id string) (*JobList, error) {
 		return nil, err
 	}
 
-	jl := &JobList{}
+	jl := &WorkflowJobList{}
 	err = s.client.do(ctx, req, jl)
 	if err != nil {
 		return nil, err
