@@ -8,6 +8,7 @@ import (
 
 type Jobs interface {
 	Get(ctx context.Context, projectSlug string, jobNumber string) (*Job, error)
+	Cancel(ctx context.Context, projectSlug string, jobNumber string) error
 }
 
 type jobs struct {
@@ -96,4 +97,22 @@ func (s *jobs) Get(ctx context.Context, projectSlug string, jobNumber string) (*
 	}
 
 	return j, nil
+}
+
+func (s *jobs) Cancel(ctx context.Context, projectSlug string, jobNumber string) error {
+	if !validString(&projectSlug) {
+		return ErrRequiredProjectSlug
+	}
+
+	if !validString(&jobNumber) {
+		return ErrRequiredJobNumber
+	}
+
+	u := fmt.Sprintf("project/%s/job/%s/cancel", projectSlug, jobNumber)
+	req, err := s.client.newRequest("POST", u, nil)
+	if err != nil {
+		return err
+	}
+
+	return s.client.do(ctx, req, nil)
 }

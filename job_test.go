@@ -37,3 +37,24 @@ func Test_jobs_Get(t *testing.T) {
 		t.Errorf("Jobs.Get got %+v, want %+v", j, want)
 	}
 }
+
+func Test_jobs_Cancel(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	jobNumber := "1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/job/%s/cancel", projectSlug, jobNumber), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"message": "success"}`)
+	})
+
+	ctx := context.Background()
+	err := client.Jobs.Cancel(ctx, projectSlug, jobNumber)
+	if err != nil {
+		t.Errorf("Jobs.Cancel got error: %v", err)
+	}
+}
