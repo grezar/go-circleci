@@ -19,6 +19,7 @@ type Projects interface {
 	TriggerPipeline(ctx context.Context, projectSlug string, options ProjectTriggerPipelineOptions) (*Pipeline, error)
 	ListPipelines(ctx context.Context, projectSlug string, options ProjectListPipelinesOptions) (*PipelineList, error)
 	ListMyPipelines(ctx context.Context, projectSlug string, options ProjectListMyPipelinesOptions) (*PipelineList, error)
+	GetPipeline(ctx context.Context, projectSlug string, pipelineNumber string) (*Pipeline, error)
 }
 
 // projects implementes Projects interface
@@ -382,4 +383,28 @@ func (s *projects) ListMyPipelines(ctx context.Context, projectSlug string, opti
 	}
 
 	return pl, nil
+}
+
+func (s *projects) GetPipeline(ctx context.Context, projectSlug string, pipelineNumber string) (*Pipeline, error) {
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&pipelineNumber) {
+		return nil, ErrRequiredPipelineNumber
+	}
+
+	u := fmt.Sprintf("/project/%s/pipeline/%s", projectSlug, pipelineNumber)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	p := &Pipeline{}
+	err = s.client.do(ctx, req, p)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
 }

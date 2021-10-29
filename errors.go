@@ -21,4 +21,5 @@ var (
 	ErrRequiredPipelineContinuationKey       = errors.New("pipeline continuation key is required")
 	ErrRequiredPipelineConfiguration         = errors.New("pipeline configuration is required")
 	ErrRequiredPipelinePipelineID            = errors.New("pipeline ID is required")
+	ErrRequiredPipelineNumber                = errors.New("pipeline number is required")
 )

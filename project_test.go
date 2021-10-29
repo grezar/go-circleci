@@ -388,3 +388,35 @@ func Test_projects_ListMyPipelines(t *testing.T) {
 		t.Errorf("Projects.ListPipelines got %+v, want %+v", pl, want)
 	}
 }
+
+func Test_projects_GetPipeline(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	pipelineNumber := "1"
+
+	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline/%s", projectSlug, pipelineNumber), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"id": "1", "trigger": {"type": "explicit"}}`)
+	})
+
+	ctx := context.Background()
+	p, err := client.Projects.GetPipeline(ctx, projectSlug, pipelineNumber)
+	if err != nil {
+		t.Errorf("Projects.GetPipeline got error: %v", err)
+	}
+
+	want := &Pipeline{
+		ID: "1",
+		Trigger: &Trigger{
+			Type: "explicit",
+		},
+	}
+
+	if !cmp.Equal(p, want) {
+		t.Errorf("Projects.GetPipeline got %+v, want %+v", p, want)
+	}
+}
