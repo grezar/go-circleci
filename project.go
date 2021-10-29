@@ -18,6 +18,7 @@ type Projects interface {
 	GetVariable(ctx context.Context, projectSlug, name string) (*ProjectVariable, error)
 	TriggerPipeline(ctx context.Context, projectSlug string, options ProjectTriggerPipelineOptions) (*Pipeline, error)
 	ListPipelines(ctx context.Context, projectSlug string, options ProjectListPipelinesOptions) (*PipelineList, error)
+	ListMyPipelines(ctx context.Context, projectSlug string, options ProjectListMyPipelinesOptions) (*PipelineList, error)
 }
 
 // projects implementes Projects interface
@@ -336,6 +337,39 @@ func (s *projects) ListPipelines(ctx context.Context, projectSlug string, option
 	}
 
 	u := fmt.Sprintf("/project/%s/pipeline", projectSlug)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	pl := &PipelineList{}
+	err = s.client.do(ctx, req, pl)
+	if err != nil {
+		return nil, err
+	}
+
+	return pl, nil
+}
+
+type ProjectListMyPipelinesOptions struct {
+	PageToken *string `url:"page-token,omitempty"`
+}
+
+func (o ProjectListMyPipelinesOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (s *projects) ListMyPipelines(ctx context.Context, projectSlug string, options ProjectListMyPipelinesOptions) (*PipelineList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	u := fmt.Sprintf("/project/%s/pipeline/mine", projectSlug)
 	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
