@@ -22,4 +22,5 @@ var (
 	ErrRequiredPipelineConfiguration         = errors.New("pipeline configuration is required")
 	ErrRequiredPipelinePipelineID            = errors.New("pipeline ID is required")
 	ErrRequiredPipelineNumber                = errors.New("pipeline number is required")
+	ErrRequiredJobNumber                     = errors.New("job number is required")
 )
