@@ -8,6 +8,7 @@ import (
 
 type Insights interface {
 	ListSummaryMetrics(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
+	ListSummaryMetricsForProjectWorkflowJobs(ctx context.Context, projectSlug, workflowName string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
 	ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
 }
 
@@ -81,6 +82,34 @@ func (s *insights) ListSummaryMetrics(ctx context.Context, projectSlug string, o
 	}
 
 	u := fmt.Sprintf("insights/%s/workflows", projectSlug)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	sml := &SummaryMetricsList{}
+	err = s.client.do(ctx, req, sml)
+	if err != nil {
+		return nil, err
+	}
+
+	return sml, nil
+}
+
+func (s *insights) ListSummaryMetricsForProjectWorkflowJobs(ctx context.Context, projectSlug, workflowName string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&workflowName) {
+		return nil, ErrRequiredWorkflowName
+	}
+
+	u := fmt.Sprintf("insights/%s/workflows/%s/jobs", projectSlug, workflowName)
 	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
