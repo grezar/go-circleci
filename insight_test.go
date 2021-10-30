@@ -91,6 +91,43 @@ func Test_insights_ListSummaryMetricsForWorkflowJobs(t *testing.T) {
 	}
 }
 
+func Test_insights_GetTestMetricsForWorkflows(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	projectSlug := "gh/org1/prj1"
+	workflosName := "workflow1"
+
+	mux.HandleFunc(fmt.Sprintf("/insights/%s/workflows/%s/test-metrics", projectSlug, workflosName), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Circle-Token", client.token)
+		testQuery(t, r, "all-branches", "true")
+		fmt.Fprint(w, `{"average_test_count": 0, "most_failed_tests": [{"failed_runs": 0}]}`)
+	})
+
+	ctx := context.Background()
+	wrl, err := client.Insights.GetTestMetricsForWorkflows(ctx, projectSlug, workflosName, InsightsGetTestMetricsOptions{
+		AllBranches: Bool(true),
+	})
+	if err != nil {
+		t.Errorf("Insights.GetTestMetricsForWorkflows got error: %v", err)
+	}
+
+	want := &TestMetrics{
+		AverageTestCount: 0,
+		MostFailedTests: []*MostFailedTest{
+			{
+				FailedRuns: 0,
+			},
+		},
+	}
+
+	if !cmp.Equal(wrl, want) {
+		t.Errorf("Insights.GetTestMetricsForWorkflows got %+v, want %+v", wrl, want)
+	}
+}
+
 func Test_insights_ListWorkflowRuns(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()

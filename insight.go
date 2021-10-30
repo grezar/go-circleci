@@ -9,6 +9,7 @@ import (
 type Insights interface {
 	ListSummaryMetricsForWorkflos(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
 	ListSummaryMetricsForWorkflowJobs(ctx context.Context, projectSlug, workflowName string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
+	GetTestMetricsForWorkflows(ctx context.Context, projectSlug, workflowName string, options InsightsGetTestMetricsOptions) (*TestMetrics, error)
 	ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
 	ListWorkflowJobRuns(ctx context.Context, projectSlug, workflowName, jobName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
 }
@@ -123,6 +124,87 @@ func (s *insights) ListSummaryMetricsForWorkflowJobs(ctx context.Context, projec
 	}
 
 	return sml, nil
+}
+
+type TestMetrics struct {
+	AverageTestCount     int               `json:"average_test_count"`
+	MostFailedTests      []*MostFailedTest `json:"most_failed_tests"`
+	MostFailedTestsExtra int               `json:"most_failed_tests_extra"`
+	SlowestTests         []*SlowestTest    `json:"slowest_tests"`
+	SlowestTestsExtra    int               `json:"slowest_tests_extra"`
+	TotalTestRuns        int               `json:"total_test_runs"`
+	TestRuns             []*TestRun        `json:"test_runs"`
+}
+
+type MostFailedTest struct {
+	FailedRuns  int    `json:"failed_runs"`
+	JobName     string `json:"job_name"`
+	P95Duration int    `json:"p95_duration"`
+	TestName    string `json:"test_name"`
+	TotalRuns   int    `json:"total_runs"`
+	Flaky       bool   `json:"flaky"`
+}
+
+type SlowestTest struct {
+	FailedRuns  int    `json:"failed_runs"`
+	JobName     string `json:"job_name"`
+	P95Duration int    `json:"p95_duration"`
+	TestName    string `json:"test_name"`
+	TotalRuns   int    `json:"total_runs"`
+	Flaky       bool   `json:"flaky"`
+}
+
+type TestRun struct {
+	PipelineNumber int         `json:"pipeline_number"`
+	WorkflowID     interface{} `json:"workflow_id"`
+	SuccessRate    int         `json:"success_rate"`
+	TestCounts     TestCounts  `json:"test_counts"`
+}
+
+type TestCounts struct {
+	Error   int `json:"error"`
+	Failure int `json:"failure"`
+	Skipped int `json:"skipped"`
+	Success int `json:"success"`
+	Total   int `json:"total"`
+}
+
+type InsightsGetTestMetricsOptions struct {
+	AllBranches *bool   `url:"all-branches,omitempty"`
+	PageToken   *string `url:"page-token,omitempty"`
+}
+
+func (o InsightsGetTestMetricsOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (s *insights) GetTestMetricsForWorkflows(ctx context.Context, projectSlug, workflowName string, options InsightsGetTestMetricsOptions) (*TestMetrics, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&workflowName) {
+		return nil, ErrRequiredWorkflowName
+	}
+
+	u := fmt.Sprintf("insights/%s/workflows/%s/test-metrics", projectSlug, workflowName)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	tm := &TestMetrics{}
+	err = s.client.do(ctx, req, tm)
+	if err != nil {
+		return nil, err
+	}
+
+	return tm, nil
 }
 
 type WorkflowRunList struct {
