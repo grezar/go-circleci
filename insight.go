@@ -8,6 +8,7 @@ import (
 
 type Insights interface {
 	ListSummaryMetrics(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
+	ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
 }
 
 // insights implementes Insights interface
@@ -92,4 +93,60 @@ func (s *insights) ListSummaryMetrics(ctx context.Context, projectSlug string, o
 	}
 
 	return sml, nil
+}
+
+type WorkflowRunList struct {
+	Items         []*WorkflowRun `json:"items"`
+	NextPageToken string         `json:"next_page_token"`
+}
+
+type WorkflowRun struct {
+	ID          string    `json:"id"`
+	Branch      string    `json:"branch"`
+	Duration    int       `json:"duration"`
+	CreatedAt   time.Time `json:"created_at"`
+	StoppedAt   time.Time `json:"stopped_at"`
+	CreditsUsed int       `json:"credits_used"`
+	Status      string    `json:"status"`
+}
+
+type InsightsListWorkflowRunsOptions struct {
+	AllBranches *bool      `url:"all-branches,omitempty"`
+	Branch      *string    `url:"branch,omitempty"`
+	StartDate   *time.Time `url:"start-date,omitempty"`
+	EndDate     *time.Time `url:"end-date,omitempty"`
+	PageToken   *string    `url:"page-token,omitempty"`
+}
+
+func (o InsightsListWorkflowRunsOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (s *insights) ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&workflowName) {
+		return nil, ErrRequiredWorkflowName
+	}
+
+	u := fmt.Sprintf("insights/%s/workflows/%s", projectSlug, workflowName)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	wil := &WorkflowRunList{}
+	err = s.client.do(ctx, req, wil)
+	if err != nil {
+		return nil, err
+	}
+
+	return wil, nil
 }
