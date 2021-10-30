@@ -9,3 +9,8 @@ func String(v string) *string {
 func Bool(v bool) *bool {
 	return &v
 }
+
+// ReportingWindow returns a pointer to the given reportingWindow.
+func ReportingWindow(v reportingWindow) *reportingWindow {
+	return &v
+}
