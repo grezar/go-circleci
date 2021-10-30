@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func Test_insights_ListSummaryMetrics(t *testing.T) {
+func Test_insights_ListSummaryMetricsForWorkflows(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -27,13 +27,13 @@ func Test_insights_ListSummaryMetrics(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	sml, err := client.Insights.ListSummaryMetrics(ctx, projectSlug, InsightsListSummaryMetricsOptions{
+	sml, err := client.Insights.ListSummaryMetricsForWorkflos(ctx, projectSlug, InsightsListSummaryMetricsOptions{
 		PageToken:       String("1"),
 		AllBranches:     Bool(true),
 		ReportingWindow: ReportingWindow(Last90Days),
 	})
 	if err != nil {
-		t.Errorf("Insights.ListSummaryMetrics got error: %v", err)
+		t.Errorf("Insights.ListSummaryMetricsForWorkflos got error: %v", err)
 	}
 
 	want := &SummaryMetricsList{
@@ -46,11 +46,11 @@ func Test_insights_ListSummaryMetrics(t *testing.T) {
 	}
 
 	if !cmp.Equal(sml, want) {
-		t.Errorf("Insights.ListSummaryMetrics got %+v, want %+v", sml, want)
+		t.Errorf("Insights.ListSummaryMetricsForWorkflos got %+v, want %+v", sml, want)
 	}
 }
 
-func Test_insights_ListSummaryMetricsForProjectWorkflowJobs(t *testing.T) {
+func Test_insights_ListSummaryMetricsForWorkflowJobs(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -68,13 +68,13 @@ func Test_insights_ListSummaryMetricsForProjectWorkflowJobs(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	sml, err := client.Insights.ListSummaryMetricsForProjectWorkflowJobs(ctx, projectSlug, workflosName, InsightsListSummaryMetricsOptions{
+	sml, err := client.Insights.ListSummaryMetricsForWorkflowJobs(ctx, projectSlug, workflosName, InsightsListSummaryMetricsOptions{
 		PageToken:       String("1"),
 		AllBranches:     Bool(true),
 		ReportingWindow: ReportingWindow(Last90Days),
 	})
 	if err != nil {
-		t.Errorf("Insights.ListSummaryMetricsForProjectWorkflowJobs got error: %v", err)
+		t.Errorf("Insights.ListSummaryMetricsForWorkflowJobs got error: %v", err)
 	}
 
 	want := &SummaryMetricsList{
@@ -87,7 +87,7 @@ func Test_insights_ListSummaryMetricsForProjectWorkflowJobs(t *testing.T) {
 	}
 
 	if !cmp.Equal(sml, want) {
-		t.Errorf("Insights.ListSummaryMetricsForProjectWorkflowJobs got %+v, want %+v", sml, want)
+		t.Errorf("Insights.ListSummaryMetricsForWorkflowJobs got %+v, want %+v", sml, want)
 	}
 }
 
