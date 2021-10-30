@@ -24,4 +24,5 @@ var (
 	ErrRequiredPipelineNumber                = errors.New("pipeline number is required")
 	ErrRequiredJobNumber                     = errors.New("job number is required")
 	ErrRequiredWorkflowName                  = errors.New("workflow name is required")
+	ErrRequiredJobName                       = errors.New("job name is required")
 )

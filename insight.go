@@ -10,6 +10,7 @@ type Insights interface {
 	ListSummaryMetrics(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
 	ListSummaryMetricsForProjectWorkflowJobs(ctx context.Context, projectSlug, workflowName string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
 	ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
+	ListWorkflowJobRuns(ctx context.Context, projectSlug, workflowName, jobName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
 }
 
 // insights implementes Insights interface
@@ -178,4 +179,36 @@ func (s *insights) ListWorkflowRuns(ctx context.Context, projectSlug, workflowNa
 	}
 
 	return wil, nil
+}
+
+func (s *insights) ListWorkflowJobRuns(ctx context.Context, projectSlug, workflowName, jobName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	if !validString(&projectSlug) {
+		return nil, ErrRequiredProjectSlug
+	}
+
+	if !validString(&workflowName) {
+		return nil, ErrRequiredWorkflowName
+	}
+
+	if !validString(&jobName) {
+		return nil, ErrRequiredJobName
+	}
+
+	u := fmt.Sprintf("insights/%s/workflows/%s/jobs/%s", projectSlug, workflowName, jobName)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
+
+	wrl := &WorkflowRunList{}
+	err = s.client.do(ctx, req, wrl)
+	if err != nil {
+		return nil, err
+	}
+
+	return wrl, nil
 }
