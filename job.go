@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock -destination=./mocks/$GOFILE
 package circleci
 
 import (
