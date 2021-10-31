@@ -7,11 +7,25 @@ import (
 	"time"
 )
 
+// Insights describes all the insights related methods that the CircleCI API
+// supports.
+//
+// CircleCI API docs: https://circleci.com/docs/api/v2/#tag/Insights
 type Insights interface {
+	// Get summary metrics for a project's workflows.
 	ListSummaryMetricsForWorkflos(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
+
+	// Get summary metrics for a project workflow's jobs.
 	ListSummaryMetricsForWorkflowJobs(ctx context.Context, projectSlug, workflowName string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
+
+	// Get test metrics for a project's workflows. Currently tests metrics are
+	// calculated based on 10 most recent workflow runs.
 	GetTestMetricsForWorkflows(ctx context.Context, projectSlug, workflowName string, options InsightsGetTestMetricsOptions) (*TestMetrics, error)
+
+	// Get recent runs of a workflow.
 	ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
+
+	// Get recent runs of a job within a workflow.
 	ListWorkflowJobRuns(ctx context.Context, projectSlug, workflowName, jobName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
 }
 
@@ -23,10 +37,15 @@ type insights struct {
 type reportingWindow string
 
 const (
-	Last7Days   reportingWindow = "last-7-days"
-	Last30Days  reportingWindow = "last-30-days"
-	Last60Days  reportingWindow = "last-60-days"
-	Last90Days  reportingWindow = "last-90-days"
+	// Last 7 days as the reporting window
+	Last7Days reportingWindow = "last-7-days"
+	// Last 30 days as the reporting window
+	Last30Days reportingWindow = "last-30-days"
+	// Last 60 days as the reporting window
+	Last60Days reportingWindow = "last-60-days"
+	// Last 90 days as the reporting window
+	Last90Days reportingWindow = "last-90-days"
+	// Last 24 hours as the reporting window
 	Last24Hours reportingWindow = "last-24-hours"
 )
 
