@@ -22,6 +22,13 @@ type contexts struct {
 	client *Client
 }
 
+type ownerType string
+
+const (
+	OwnerTypeOrganization ownerType = "organization"
+	OwnerTypeAccount      ownerType = "account"
+)
+
 type Context struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
@@ -73,15 +80,16 @@ type ContextCreateOptions struct {
 }
 
 type OwnerOptions struct {
-	ID   *string `json:"id,omitempty"`
-	Slug *string `json:"slug,omitempty"`
-	Type *string `json:"type,omitempty"`
+	ID   *string    `json:"id,omitempty"`
+	Slug *string    `json:"slug,omitempty"`
+	Type *ownerType `json:"type,omitempty"`
 }
 
 func (o ContextCreateOptions) valid() error {
 	if !validString(o.Owner.ID) && !validString(o.Owner.Slug) {
 		return ErrRequiredEitherIDOrSlug
 	}
+
 	return nil
 }
 

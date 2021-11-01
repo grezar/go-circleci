@@ -51,7 +51,7 @@ func Test_contexts_Create(t *testing.T) {
 		testMethod(t, r, "POST")
 		testHeader(t, r, "Accept", "application/vnd.api+json")
 		testHeader(t, r, "Circle-Token", client.token)
-		testBody(t, r, `{"name":"ctx","owner":{"slug":"org"}}`+"\n")
+		testBody(t, r, `{"name":"ctx","owner":{"slug":"org","type":"organization"}}`+"\n")
 		fmt.Fprint(w, `{"id": "1"}`)
 	})
 
@@ -60,6 +60,7 @@ func Test_contexts_Create(t *testing.T) {
 		Name: String("ctx"),
 		Owner: &OwnerOptions{
 			Slug: String("org"),
+			Type: OwnerType("organization"),
 		},
 	})
 	if err != nil {
