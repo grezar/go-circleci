@@ -7,17 +7,30 @@ import (
 	"time"
 )
 
+// Jobs describes all the job related methods that the CircleCI API
+// supports.
+//
+// CircleCI API docs: https://circleci.com/docs/api/v2/#tag/Job
 type Jobs interface {
+	// Returns job details.
 	Get(ctx context.Context, projectSlug string, jobNumber string) (*Job, error)
+
+	// Cancel job with a given job number.
 	Cancel(ctx context.Context, projectSlug string, jobNumber string) error
+
+	// Returns a job's artifacts.
 	ListArtifacts(ctx context.Context, projectSlug string, jobNumber string) (*ArtifactList, error)
+
+	// Get test metadata for a build.
 	ListTestMetadata(ctx context.Context, projectSlug string, jobNumber string) (*TestMetadataList, error)
 }
 
+// jobs implments Jobs interface
 type jobs struct {
 	client *Client
 }
 
+// Job represents a CircleCI job.
 type Job struct {
 	WebURL         string          `json:"web_url"`
 	Project        *JobProject     `json:"project"`

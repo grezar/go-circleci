@@ -17,18 +17,31 @@ import (
 const (
 	userAgent = "go-circleci"
 
-	DefaultAddress  = "https://circleci.com"
+	// Default address of CircleCI.
+	DefaultAddress = "https://circleci.com"
+	// Default base path of CircleCI API (V2).
 	DefaultBasePath = "/api/v2/"
 )
 
+// Config provides configuration details to the API client.
 type Config struct {
-	Address    string
-	BasePath   string
-	Token      string
-	Headers    http.Header
+	// The address of the CircleCI API.
+	Address string
+
+	// The base path on which the API is served.
+	BasePath string
+
+	// API token used to access the CircleCI API.
+	Token string
+
+	// Headers that will be added to every request.
+	Headers http.Header
+
+	// A custom HTTP client to use.
 	HTTPClient *http.Client
 }
 
+// DefaultConfig returns a default config.
 func DefaultConfig() *Config {
 	config := &Config{
 		Address:    DefaultAddress,
@@ -43,6 +56,8 @@ func DefaultConfig() *Config {
 	return config
 }
 
+// Client is the CirleCI API client. It provides the basic
+// connectivity and configuration for accessing the CircleCI API.
 type Client struct {
 	baseURL *url.URL
 	token   string
@@ -58,6 +73,7 @@ type Client struct {
 	Insights  Insights
 }
 
+// NewClient returns a new CircleCI API client.
 func NewClient(cfg *Config) (*Client, error) {
 	config := DefaultConfig()
 
@@ -197,6 +213,7 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) error
 	return err
 }
 
+// ErrorResponse represents a error response from the CircleCI API.
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
