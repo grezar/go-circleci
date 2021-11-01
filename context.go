@@ -41,10 +41,10 @@ type ContextList struct {
 }
 
 type ContextListOptions struct {
-	OwnerID   *string `url:"owner-id,omitempty"`
-	OwnerSlug *string `url:"owner-slug,omitempty"`
-	OwnerType *string `url:"owner-type,omitempty"`
-	PageToken *string `url:"page-token,omitempty"`
+	OwnerID   *string    `url:"owner-id,omitempty"`
+	OwnerSlug *string    `url:"owner-slug,omitempty"`
+	OwnerType *ownerType `url:"owner-type,omitempty"`
+	PageToken *string    `url:"page-token,omitempty"`
 }
 
 func (o ContextListOptions) valid() error {

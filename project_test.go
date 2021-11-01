@@ -42,7 +42,7 @@ func Test_projects_CreateCheckoutKey(t *testing.T) {
 	defer teardown()
 
 	projectSlug := "gh/org1/prj1"
-	keyType := "deploy-key"
+	keyType := CheckoutKeyTypeDeployKey
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
@@ -54,7 +54,7 @@ func Test_projects_CreateCheckoutKey(t *testing.T) {
 
 	ctx := context.Background()
 	pck, err := client.Projects.CreateCheckoutKey(ctx, projectSlug, ProjectCreateCheckoutKeyOptions{
-		Type: String(keyType),
+		Type: CheckoutKeyType(keyType),
 	})
 	if err != nil {
 		t.Errorf("Projects.CreateCheckoutKey got error: %v", err)
@@ -75,7 +75,7 @@ func Test_projects_ListCheckoutKeys(t *testing.T) {
 	defer teardown()
 
 	projectSlug := "gh/org1/prj1"
-	keyType := "deploy-key"
+	keyType := CheckoutKeyTypeDeployKey
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
