@@ -5,6 +5,12 @@
 
 This client supports the [CircleCI V2 API](https://circleci.com/docs/api/v2/).
 
+Note this client is in beta. While I am using this client in my personal
+projects, many of the methods are not yet used in real projects and have not
+been fully tested. Therefore, this client may involve a lot of breaking changes
+until it reaches v1.0. If you find any missing features or bugs, please kindly
+report it via an Issue or Pull Request.
+
 ## Installation
 
 Installation can be done with a normal `go get`:
@@ -38,3 +44,16 @@ if err != nil {
 	log.Fatal(err)
 }
 ```
+
+## Documentation
+TODO: Write code comments for Go Doc.
+
+## Contribution
+If you find any issues with this package, please report an Issue.
+
+## TODO
+- [ ] Support the [CircleCI Schedule API](https://circleci.com/docs/api/v2/#tag/Schedule).
+- [ ] Provide detailed Documentation in Go Doc.
+
+## LICENSE
+[The MIT License (MIT)](https://github.com/grezar/go-circleci/blob/main/LICENSE)
