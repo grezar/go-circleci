@@ -26,3 +26,8 @@ func ReportingWindow(v reportingWindow) *reportingWindow {
 func OwnerType(v ownerType) *ownerType {
 	return &v
 }
+
+// CheckoutKeyType return a pointer to the given checkoutKeyType
+func CheckoutKeyType(v checkoutKeyType) *checkoutKeyType {
+	return &v
+}
