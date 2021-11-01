@@ -7,7 +7,7 @@ This client supports the [CircleCI V2 API](https://circleci.com/docs/api/v2/).
 
 Note this client is in beta. While I am using this client in my personal
 projects, many of the methods are not yet used in real projects and have not
-been fully tested. Therefore, this client may involve a lot of breaking changes
+been fully tested. Therefore, this client may involve some breaking changes
 until it reaches v1.0. If you find any missing features or bugs, please kindly
 report it via an Issue or Pull Request.
 
