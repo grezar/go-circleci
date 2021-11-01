@@ -51,5 +51,9 @@ TODO: Write code comments for Go Doc.
 ## Contribution
 If you find any issues with this package, please report an Issue.
 
+## TODO
+- [ ] Support the [CircleCI Schedule API](https://circleci.com/docs/api/v2/#tag/Schedule).
+- [ ] Provide detailed Documentation in Go Doc.
+
 ## LICENSE
 [The MIT License (MIT)](https://github.com/grezar/go-circleci/blob/main/LICENSE)
