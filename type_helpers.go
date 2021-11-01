@@ -21,3 +21,8 @@ func Time(v time.Time) *time.Time {
 func ReportingWindow(v reportingWindow) *reportingWindow {
 	return &v
 }
+
+// OwnerType returs a pointer to the given ownerType.
+func OwnerType(v ownerType) *ownerType {
+	return &v
+}
