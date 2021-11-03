@@ -17,17 +17,17 @@ func Time(v time.Time) *time.Time {
 	return &v
 }
 
-// ReportingWindow returns a pointer to the given reportingWindow.
-func ReportingWindow(v reportingWindow) *reportingWindow {
+// ReportingWindow returns a pointer to the given ReportingWindowType.
+func ReportingWindow(v ReportingWindowType) *ReportingWindowType {
 	return &v
 }
 
-// OwnerType returs a pointer to the given ownerType.
-func OwnerType(v ownerType) *ownerType {
+// OwnerType returs a pointer to the given OwnerTypeType.
+func OwnerType(v OwnerTypeType) *OwnerTypeType {
 	return &v
 }
 
-// CheckoutKeyType return a pointer to the given checkoutKeyType
-func CheckoutKeyType(v checkoutKeyType) *checkoutKeyType {
+// CheckoutKeyType return a pointer to the given CheckoutKeyTypeType
+func CheckoutKeyType(v CheckoutKeyTypeType) *CheckoutKeyTypeType {
 	return &v
 }

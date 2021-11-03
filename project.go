@@ -28,11 +28,11 @@ type projects struct {
 	client *Client
 }
 
-type checkoutKeyType string
+type CheckoutKeyTypeType string
 
 const (
-	CheckoutKeyTypeUserKey   checkoutKeyType = "user-key"
-	CheckoutKeyTypeDeployKey checkoutKeyType = "deploy-key"
+	CheckoutKeyTypeUserKey   CheckoutKeyTypeType = "user-key"
+	CheckoutKeyTypeDeployKey CheckoutKeyTypeType = "deploy-key"
 )
 
 type Project struct {
@@ -69,15 +69,15 @@ func (s *projects) Get(ctx context.Context, projectSlug string) (*Project, error
 }
 
 type ProjectCheckoutKey struct {
-	PublicKey   string          `json:"public-key"`
-	Type        checkoutKeyType `json:"type"`
-	Fingerprint string          `json:"fingerprint"`
-	Preferred   bool            `json:"preferred"`
-	CreatedAt   time.Time       `json:"created-at"`
+	PublicKey   string              `json:"public-key"`
+	Type        CheckoutKeyTypeType `json:"type"`
+	Fingerprint string              `json:"fingerprint"`
+	Preferred   bool                `json:"preferred"`
+	CreatedAt   time.Time           `json:"created-at"`
 }
 
 type ProjectCreateCheckoutKeyOptions struct {
-	Type *checkoutKeyType `json:"type"`
+	Type *CheckoutKeyTypeType `json:"type"`
 }
 
 func (o ProjectCreateCheckoutKeyOptions) valid() error {
