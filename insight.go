@@ -20,14 +20,14 @@ type insights struct {
 	client *Client
 }
 
-type reportingWindow string
+type ReportingWindowType string
 
 const (
-	Last7Days   reportingWindow = "last-7-days"
-	Last30Days  reportingWindow = "last-30-days"
-	Last60Days  reportingWindow = "last-60-days"
-	Last90Days  reportingWindow = "last-90-days"
-	Last24Hours reportingWindow = "last-24-hours"
+	Last7Days   ReportingWindowType = "last-7-days"
+	Last30Days  ReportingWindowType = "last-30-days"
+	Last60Days  ReportingWindowType = "last-60-days"
+	Last90Days  ReportingWindowType = "last-90-days"
+	Last24Hours ReportingWindowType = "last-24-hours"
 )
 
 type SummaryMetricsList struct {
@@ -64,10 +64,10 @@ type DurationMetrics struct {
 }
 
 type InsightsListSummaryMetricsOptions struct {
-	ReportingWindow *reportingWindow `url:"reporting-window,omitempty"`
-	AllBranches     *bool            `url:"all-branches,omitempty"`
-	Branch          *string          `url:"branch,omitempty"`
-	PageToken       *string          `url:"page-token,omitempty"`
+	ReportingWindow *ReportingWindowType `url:"reporting-window,omitempty"`
+	AllBranches     *bool                `url:"all-branches,omitempty"`
+	Branch          *string              `url:"branch,omitempty"`
+	PageToken       *string              `url:"page-token,omitempty"`
 }
 
 func (o InsightsListSummaryMetricsOptions) valid() error {

@@ -22,11 +22,11 @@ type contexts struct {
 	client *Client
 }
 
-type ownerType string
+type OwnerTypeType string
 
 const (
-	OwnerTypeOrganization ownerType = "organization"
-	OwnerTypeAccount      ownerType = "account"
+	OwnerTypeOrganization OwnerTypeType = "organization"
+	OwnerTypeAccount      OwnerTypeType = "account"
 )
 
 type Context struct {
@@ -41,10 +41,10 @@ type ContextList struct {
 }
 
 type ContextListOptions struct {
-	OwnerID   *string    `url:"owner-id,omitempty"`
-	OwnerSlug *string    `url:"owner-slug,omitempty"`
-	OwnerType *ownerType `url:"owner-type,omitempty"`
-	PageToken *string    `url:"page-token,omitempty"`
+	OwnerID   *string        `url:"owner-id,omitempty"`
+	OwnerSlug *string        `url:"owner-slug,omitempty"`
+	OwnerType *OwnerTypeType `url:"owner-type,omitempty"`
+	PageToken *string        `url:"page-token,omitempty"`
 }
 
 func (o ContextListOptions) valid() error {
@@ -80,9 +80,9 @@ type ContextCreateOptions struct {
 }
 
 type OwnerOptions struct {
-	ID   *string    `json:"id,omitempty"`
-	Slug *string    `json:"slug,omitempty"`
-	Type *ownerType `json:"type,omitempty"`
+	ID   *string        `json:"id,omitempty"`
+	Slug *string        `json:"slug,omitempty"`
+	Type *OwnerTypeType `json:"type,omitempty"`
 }
 
 func (o ContextCreateOptions) valid() error {
