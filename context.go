@@ -14,7 +14,7 @@ type Contexts interface {
 	Delete(ctx context.Context, contextID string) error
 	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
 	RemoveVariable(ctx context.Context, contextID string, variableName string) error
-	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options AddOrUpdateVariableOptions) (*ContextVariable, error)
+	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options ContextAddOrUpdateVariableOptions) (*ContextVariable, error)
 }
 
 // contexts implements Contexts interface
@@ -192,18 +192,18 @@ func (s *contexts) RemoveVariable(ctx context.Context, contextID, variableName s
 	return s.client.do(ctx, req, nil)
 }
 
-type AddOrUpdateVariableOptions struct {
+type ContextAddOrUpdateVariableOptions struct {
 	Value *string `json:"value"`
 }
 
-func (o AddOrUpdateVariableOptions) valid() error {
+func (o ContextAddOrUpdateVariableOptions) valid() error {
 	if !validString(o.Value) {
 		return ErrRequiredContextVariableValue
 	}
 	return nil
 }
 
-func (s *contexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options AddOrUpdateVariableOptions) (*ContextVariable, error) {
+func (s *contexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options ContextAddOrUpdateVariableOptions) (*ContextVariable, error) {
 	if err := options.valid(); err != nil {
 		return nil, err
 	}

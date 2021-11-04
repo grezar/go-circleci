@@ -196,7 +196,7 @@ func Test_contexts_AddOrUpdateVariable(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	cv, err := client.Contexts.AddOrUpdateVariable(ctx, contextID, variableName, AddOrUpdateVariableOptions{
+	cv, err := client.Contexts.AddOrUpdateVariable(ctx, contextID, variableName, ContextAddOrUpdateVariableOptions{
 		Value: String(variableValue),
 	})
 	if err != nil {
