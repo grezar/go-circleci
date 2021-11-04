@@ -14,7 +14,7 @@ type Contexts interface {
 	Delete(ctx context.Context, contextID string) error
 	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
 	RemoveVariable(ctx context.Context, contextID string, variableName string) error
-	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options AddOrUpdateVariableOptions) (*ContextVariable, error)
+	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options ContextAddOrUpdateVariableOptions) (*ContextVariable, error)
 }
 
 // contexts implements Contexts interface
@@ -49,7 +49,7 @@ type ContextListOptions struct {
 
 func (o ContextListOptions) valid() error {
 	if !validString(o.OwnerID) && !validString(o.OwnerSlug) {
-		return ErrRequiredEitherIDOrSlug
+		return ErrRequiredEitherOrganizationIDOrSlug
 	}
 	return nil
 }
@@ -87,7 +87,7 @@ type OwnerOptions struct {
 
 func (o ContextCreateOptions) valid() error {
 	if !validString(o.Owner.ID) && !validString(o.Owner.Slug) {
-		return ErrRequiredEitherIDOrSlug
+		return ErrRequiredEitherOrganizationIDOrSlug
 	}
 
 	return nil
@@ -192,18 +192,18 @@ func (s *contexts) RemoveVariable(ctx context.Context, contextID, variableName s
 	return s.client.do(ctx, req, nil)
 }
 
-type AddOrUpdateVariableOptions struct {
+type ContextAddOrUpdateVariableOptions struct {
 	Value *string `json:"value"`
 }
 
-func (o AddOrUpdateVariableOptions) valid() error {
+func (o ContextAddOrUpdateVariableOptions) valid() error {
 	if !validString(o.Value) {
-		return ErrRequiredContextVariableValue
+		return ErrRequiredEnvironmentVariableValue
 	}
 	return nil
 }
 
-func (s *contexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options AddOrUpdateVariableOptions) (*ContextVariable, error) {
+func (s *contexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options ContextAddOrUpdateVariableOptions) (*ContextVariable, error) {
 	if err := options.valid(); err != nil {
 		return nil, err
 	}
@@ -213,7 +213,7 @@ func (s *contexts) AddOrUpdateVariable(ctx context.Context, contextID, variableN
 	}
 
 	if !validString(&variableName) {
-		return nil, ErrRequiredContextVariableName
+		return nil, ErrRequiredEnvironmentVariableName
 	}
 
 	u := fmt.Sprintf("context/%s/environment-variable/%s", contextID, variableName)

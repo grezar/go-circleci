@@ -63,7 +63,7 @@ func (s *users) Collaborations(ctx context.Context) ([]*Collaboration, error) {
 
 func (s *users) GetUser(ctx context.Context, id string) (*User, error) {
 	if !validString(&id) {
-		return nil, ErrRequiredUsersUserID
+		return nil, ErrRequiredUserID
 	}
 	u := fmt.Sprintf("user/%s", id)
 	req, err := s.client.newRequest("GET", u, nil)

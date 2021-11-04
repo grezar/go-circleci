@@ -36,7 +36,7 @@ func (m *MockContexts) EXPECT() *MockContextsMockRecorder {
 }
 
 // AddOrUpdateVariable mocks base method.
-func (m *MockContexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options circleci.AddOrUpdateVariableOptions) (*circleci.ContextVariable, error) {
+func (m *MockContexts) AddOrUpdateVariable(ctx context.Context, contextID, variableName string, options circleci.ContextAddOrUpdateVariableOptions) (*circleci.ContextVariable, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddOrUpdateVariable", ctx, contextID, variableName, options)
 	ret0, _ := ret[0].(*circleci.ContextVariable)

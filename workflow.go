@@ -37,7 +37,7 @@ type Workflow struct {
 
 func (s *workflows) Get(ctx context.Context, id string) (*Workflow, error) {
 	if !validString(&id) {
-		return nil, ErrRequiredWorkflowsWorkflowID
+		return nil, ErrRequiredWorkflowID
 	}
 
 	u := fmt.Sprintf("workflow/%s", id)
@@ -57,11 +57,11 @@ func (s *workflows) Get(ctx context.Context, id string) (*Workflow, error) {
 
 func (s *workflows) ApproveJob(ctx context.Context, id, approvalRequestID string) error {
 	if !validString(&id) {
-		return ErrRequiredWorkflowsWorkflowID
+		return ErrRequiredWorkflowID
 	}
 
 	if !validString(&approvalRequestID) {
-		return ErrRequiredWorkflowsApprovalRequestID
+		return ErrRequiredApprovalRequestID
 	}
 
 	u := fmt.Sprintf("workflow/%s/approve/%s", id, approvalRequestID)
@@ -75,7 +75,7 @@ func (s *workflows) ApproveJob(ctx context.Context, id, approvalRequestID string
 
 func (s *workflows) Cancel(ctx context.Context, id string) error {
 	if !validString(&id) {
-		return ErrRequiredWorkflowsWorkflowID
+		return ErrRequiredWorkflowID
 	}
 
 	u := fmt.Sprintf("workflow/%s/cancel", id)
@@ -109,7 +109,7 @@ type WorkflowJob struct {
 
 func (s *workflows) ListWorkflowJobs(ctx context.Context, id string) (*WorkflowJobList, error) {
 	if !validString(&id) {
-		return nil, ErrRequiredWorkflowsWorkflowID
+		return nil, ErrRequiredWorkflowID
 	}
 
 	u := fmt.Sprintf("workflow/%s/job", id)
@@ -144,7 +144,7 @@ func (s *workflows) Rerun(ctx context.Context, id string, options WorkflowRerunO
 	}
 
 	if !validString(&id) {
-		return ErrRequiredWorkflowsWorkflowID
+		return ErrRequiredWorkflowID
 	}
 
 	u := fmt.Sprintf("workflow/%s/rerun", id)
