@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/google/go-querystring/query"
 )
@@ -82,6 +83,11 @@ func NewClient(cfg *Config) (*Client, error) {
 	baseURL, err := url.Parse(config.Address)
 	if err != nil {
 		return nil, fmt.Errorf("invalid address: %v", err)
+	}
+
+	baseURL.Path = config.BasePath
+	if !strings.HasSuffix(baseURL.Path, "/") {
+		baseURL.Path += "/"
 	}
 
 	if config.Token == "" {
