@@ -70,9 +70,9 @@ type PipelineError struct {
 }
 
 type PipelineListOptions struct {
-	OrgSlug   *string `json:"org-slug,omitempty"`
-	Mine      *bool   `json:"mine,omitempty"`
-	PageToken *string `json:"page-token,omitempty"`
+	OrgSlug   *string `url:"org-slug,omitempty"`
+	Mine      *bool   `url:"mine,omitempty"`
+	PageToken *string `url:"page-token,omitempty"`
 }
 
 func (o PipelineListOptions) valid() error {

@@ -17,6 +17,8 @@ func Test_pipelines_List(t *testing.T) {
 		testMethod(t, r, "GET")
 		testHeader(t, r, "Accept", "application/vnd.api+json")
 		testHeader(t, r, "Circle-Token", client.token)
+		testQuery(t, r, "org-slug", "org1")
+		testQuery(t, r, "mine", "true")
 		fmt.Fprint(w, `{"items": [{"id": "1", "trigger": {"type": "explicit"}}], "next_page_token": "1"}`)
 	})
 
