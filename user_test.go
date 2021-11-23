@@ -9,7 +9,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func Test_contexts_Me(t *testing.T) {
+func Test_users_Me(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -37,7 +37,7 @@ func Test_contexts_Me(t *testing.T) {
 	}
 }
 
-func Test_contexts_Collaborations(t *testing.T) {
+func Test_users_Collaborations(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -67,7 +67,7 @@ func Test_contexts_Collaborations(t *testing.T) {
 	}
 }
 
-func Test_contexts_GetUser(t *testing.T) {
+func Test_users_GetUser(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
