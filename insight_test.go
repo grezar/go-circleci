@@ -18,7 +18,7 @@ func Test_insights_ListSummaryMetricsForWorkflows(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/insights/%s/workflows", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "page-token", "1")
 		testQuery(t, r, "all-branches", "true")
@@ -59,7 +59,7 @@ func Test_insights_ListSummaryMetricsForWorkflowJobs(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/insights/%s/workflows/%s/jobs", projectSlug, workflosName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "page-token", "1")
 		testQuery(t, r, "all-branches", "true")
@@ -100,7 +100,7 @@ func Test_insights_GetTestMetricsForWorkflows(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/insights/%s/workflows/%s/test-metrics", projectSlug, workflosName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "all-branches", "true")
 		fmt.Fprint(w, `{"average_test_count": 0, "most_failed_tests": [{"failed_runs": 0}]}`)
@@ -137,7 +137,7 @@ func Test_insights_ListWorkflowRuns(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/insights/%s/workflows/%s", projectSlug, workflosName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "page-token", "1")
 		testQuery(t, r, "all-branches", "true")
@@ -184,7 +184,7 @@ func Test_insights_ListWorkflowJobRuns(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/insights/%s/workflows/%s/jobs/%s", projectSlug, workflosName, jobName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "page-token", "1")
 		testQuery(t, r, "all-branches", "true")

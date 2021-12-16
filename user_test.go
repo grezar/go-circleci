@@ -15,7 +15,7 @@ func Test_users_Me(t *testing.T) {
 
 	mux.HandleFunc("/me", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"id": "1", "login": "login1", "name": "name1"}`)
 	})
@@ -43,7 +43,7 @@ func Test_users_Collaborations(t *testing.T) {
 
 	mux.HandleFunc("/me/collaborations", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `[{"vcs-type": "vcs1", "name": "name1", "avatar_url": "avatar1"}]`)
 	})
@@ -75,7 +75,7 @@ func Test_users_GetUser(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/user/%s", userID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"id": "1", "login": "login1", "name": "name1"}`)
 	})

@@ -120,7 +120,7 @@ func (c *Client) newRequest(method string, path string, v interface{}) (*http.Re
 
 	reqHeaders := make(http.Header)
 	reqHeaders.Set("Circle-Token", c.token)
-	reqHeaders.Set("Accept", "application/vnd.api+json")
+	reqHeaders.Set("Accept", "application/json")
 
 	var body interface{}
 	switch method {
@@ -133,7 +133,7 @@ func (c *Client) newRequest(method string, path string, v interface{}) (*http.Re
 			u.RawQuery = q.Encode()
 		}
 	case "DELETE", "PATCH", "POST", "PUT":
-		reqHeaders.Set("Content-Type", "application/vnd.api+json")
+		reqHeaders.Set("Content-Type", "application/json")
 		body = v
 	}
 

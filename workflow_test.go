@@ -17,7 +17,7 @@ func Test_workflows_Get(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/workflow/%s", workflowID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"id": "1"}`)
 	})
@@ -46,7 +46,7 @@ func Test_workflows_ApproveJob(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/workflow/%s/approve/%s", workflowID, jobID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "string"}`)
 	})
@@ -66,7 +66,7 @@ func Test_workflows_Cancel(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/workflow/%s/cancel", workflowID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "string"}`)
 	})
@@ -86,7 +86,7 @@ func Test_workflows_ListWorkflowJobs(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/workflow/%s/job", workflowID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"items": [{"id": "1"}], "next_page_token": "1"}`)
 	})
@@ -119,7 +119,7 @@ func Test_workflows_Rerun(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/workflow/%s/rerun", workflowID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"jobs":["xxx-yyy-zzz"],"from_failed":true,"sparse_tree":false}`+"\n")
 		fmt.Fprint(w, `{"message": "string"}`)
