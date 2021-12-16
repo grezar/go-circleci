@@ -17,7 +17,7 @@ func Test_projects_Get(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"slug": "gh/org1/prj1"}`)
 	})
@@ -46,7 +46,7 @@ func Test_projects_CreateCheckoutKey(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"type":"deploy-key"}`+"\n")
 		fmt.Fprint(w, `{"type": "deploy-key", "preferred": true}`)
@@ -79,7 +79,7 @@ func Test_projects_ListCheckoutKeys(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"items": [{"type": "deploy-key"}], "next_page_token": "1"}`)
 	})
@@ -113,7 +113,7 @@ func Test_projects_GetCheckoutKey(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key/%s", projectSlug, fingerprint), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"fingerprint": "xx:yy:zz"}`)
 	})
@@ -142,7 +142,7 @@ func Test_projects_DeletetCheckoutKey(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/checkout-key/%s", projectSlug, fingerprint), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "DELETE")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "string"}`)
 	})
@@ -164,7 +164,7 @@ func Test_projects_CreateVariable(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"name":"ENV1","value":"VAL1"}`+"\n")
 		fmt.Fprint(w, `{"name": "ENV1", "value": "VAL1"}`)
@@ -197,7 +197,7 @@ func Test_projects_ListVariables(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"items": [{"name": "ENV1"}], "next_page_token": "1"}`)
 	})
@@ -231,7 +231,7 @@ func Test_projects_DeleteVariable(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar/%s", projectSlug, variableName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "DELETE")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "string"}`)
 	})
@@ -252,7 +252,7 @@ func Test_projects_GetVariable(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/envvar/%s", projectSlug, variableName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"name": "ENV1", "value": "VAL1"}`)
 	})
@@ -281,7 +281,7 @@ func Test_projects_TriggerPipeline(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"branch":"main","tag":"v0.1.0","parameters":{"deploy_prod":true}}`+"\n")
 		fmt.Fprint(w, `{"id": "1","state": "created", "number": 0}`)
@@ -319,7 +319,7 @@ func Test_projects_ListPipelines(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "branch", "main")
 		fmt.Fprint(w, `{"items": [{"id": "1", "trigger": {"type": "explicit"}}], "next_page_token": "1"}`)
@@ -358,7 +358,7 @@ func Test_projects_ListMyPipelines(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline/mine", projectSlug), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "page-token", "1")
 		fmt.Fprint(w, `{"items": [{"id": "1", "trigger": {"type": "explicit"}}], "next_page_token": "1"}`)
@@ -398,7 +398,7 @@ func Test_projects_GetPipeline(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/pipeline/%s", projectSlug, pipelineNumber), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"id": "1", "trigger": {"type": "explicit"}}`)
 	})

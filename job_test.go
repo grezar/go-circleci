@@ -18,7 +18,7 @@ func Test_jobs_Get(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/job/%s", projectSlug, jobNumber), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"name": "job1"}`)
 	})
@@ -47,7 +47,7 @@ func Test_jobs_Cancel(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/job/%s/cancel", projectSlug, jobNumber), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "success"}`)
 	})
@@ -68,7 +68,7 @@ func Test_jobs_ListArtifacts(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/%s/artifacts", projectSlug, jobNumber), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"items": [{"path": "path", "node_index": 0, "url": "url"}]}`)
 	})
@@ -103,7 +103,7 @@ func Test_jobs_ListTestMetadata(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/project/%s/%s/tests", projectSlug, jobNumber), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"items": [{"message": "message"}]}`)
 	})

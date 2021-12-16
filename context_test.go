@@ -15,7 +15,7 @@ func Test_contexts_List(t *testing.T) {
 
 	mux.HandleFunc("/context", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "owner-slug", "org")
 		fmt.Fprint(w, `{"items": [{"id": "1"}], "next_page_token": "1"}`)
@@ -49,7 +49,7 @@ func Test_contexts_Create(t *testing.T) {
 
 	mux.HandleFunc("/context", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"name":"ctx","owner":{"slug":"org","type":"organization"}}`+"\n")
 		fmt.Fprint(w, `{"id": "1"}`)
@@ -84,7 +84,7 @@ func Test_contexts_Get(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/context/%s", contextID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"id": "1"}`)
 	})
@@ -112,7 +112,7 @@ func Test_contexts_Delete(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/context/%s", contextID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "DELETE")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "string"}`)
 	})
@@ -132,7 +132,7 @@ func Test_contexts_ListVariables(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/context/%s", contextID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"items": [{"variable": "ENVVAR1", "context_id": "ctx1"}], "next_page_token": "1"}`)
 	})
@@ -167,7 +167,7 @@ func Test_contexts_RemoveVariable(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/context/%s/environment-variable/%s", contextID, variableName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "DELETE")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"message": "string"}`)
 	})
@@ -189,7 +189,7 @@ func Test_contexts_AddOrUpdateVariable(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/context/%s/environment-variable/%s", contextID, variableName), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "PUT")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"value":"VAL1"}`+"\n")
 		fmt.Fprint(w, `{"variable": "ENV1", "context_id": "ctx1"}`)

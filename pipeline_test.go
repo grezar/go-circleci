@@ -15,7 +15,7 @@ func Test_pipelines_List(t *testing.T) {
 
 	mux.HandleFunc("/pipeline/", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "org-slug", "org1")
 		testQuery(t, r, "mine", "true")
@@ -54,7 +54,7 @@ func Test_pipelines_Continue(t *testing.T) {
 
 	mux.HandleFunc("/pipeline/continue", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testBody(t, r, `{"continuation-key":"key1","configuration":"cfg1","parameters":{"deploy_prod":true}}`+"\n")
 		fmt.Fprint(w, `{"message": "string"}`)
@@ -81,7 +81,7 @@ func Test_pipelines_Get(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/pipeline/%s", pipelineID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"id": "1"}`)
 	})
@@ -109,7 +109,7 @@ func Test_pipelines_GetConfig(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/pipeline/%s/config", pipelineID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		fmt.Fprint(w, `{"source": "a", "compiled": "b"}`)
 	})
@@ -138,7 +138,7 @@ func Test_pipelines_ListWorkflows(t *testing.T) {
 
 	mux.HandleFunc(fmt.Sprintf("/pipeline/%s/workflow", pipelineID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testHeader(t, r, "Accept", "application/vnd.api+json")
+		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
 		testQuery(t, r, "page-token", "1")
 		fmt.Fprint(w, `{"items": [{"pipeline_id": "pipeline1", "pipeline_number": 0}], "next_page_token": "2"}`)
