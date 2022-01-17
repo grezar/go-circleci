@@ -22,7 +22,7 @@ go get -u github.com/grezar/go-circleci
 ## Usage
 
 ```go
-import "github.com/grezar/go-ciecleci"
+import "github.com/grezar/go-circleci"
 ```
 
 Construct a new CircleCI client, then use the various services on the client to
