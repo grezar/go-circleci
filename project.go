@@ -346,7 +346,7 @@ func (s *projects) ListPipelines(ctx context.Context, projectSlug string, option
 		return nil, ErrRequiredProjectSlug
 	}
 
-	u := fmt.Sprintf("/project/%s/pipeline", projectSlug)
+	u := fmt.Sprintf("project/%s/pipeline", projectSlug)
 	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
@@ -379,7 +379,7 @@ func (s *projects) ListMyPipelines(ctx context.Context, projectSlug string, opti
 		return nil, ErrRequiredProjectSlug
 	}
 
-	u := fmt.Sprintf("/project/%s/pipeline/mine", projectSlug)
+	u := fmt.Sprintf("project/%s/pipeline/mine", projectSlug)
 	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
@@ -403,7 +403,7 @@ func (s *projects) GetPipeline(ctx context.Context, projectSlug string, pipeline
 		return nil, ErrRequiredPipelineNumber
 	}
 
-	u := fmt.Sprintf("/project/%s/pipeline/%s", projectSlug, pipelineNumber)
+	u := fmt.Sprintf("project/%s/pipeline/%s", projectSlug, pipelineNumber)
 	req, err := s.client.newRequest("GET", u, nil)
 	if err != nil {
 		return nil, err
