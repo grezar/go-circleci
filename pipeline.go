@@ -43,6 +43,8 @@ type Trigger struct {
 }
 
 type Actor struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
 	Login     string `json:"login"`
 	AvatarURL string `json:"avatar_url"`
 }
