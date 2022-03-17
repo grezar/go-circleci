@@ -9,6 +9,7 @@ import (
 
 type Schedules interface {
 	List(ctx context.Context, projectSlug string, options ScheduleListOptions) (*ScheduleList, error)
+	Get(ctx context.Context, scheduleID string) (*Schedule, error)
 }
 
 // schedules implements Contexts interface
@@ -70,4 +71,24 @@ func (s *schedules) List(ctx context.Context, projectSlug string, options Schedu
 	}
 
 	return sl, nil
+}
+
+func (s *schedules) Get(ctx context.Context, scheduleID string) (*Schedule, error) {
+	if !validString(&scheduleID) {
+		return nil, ErrRequiredScheduleID
+	}
+
+	u := fmt.Sprintf("schedule/%s", scheduleID)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	schedule := &Schedule{}
+	err = s.client.do(ctx, req, schedule)
+	if err != nil {
+		return nil, err
+	}
+
+	return schedule, nil
 }

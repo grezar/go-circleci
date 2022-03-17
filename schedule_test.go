@@ -45,3 +45,35 @@ func Test_schedules_List(t *testing.T) {
 		t.Errorf("Schedules.List got %+v, want %+v", sl, want)
 	}
 }
+
+func Test_schedules_Get(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	scheduleID := "schedule1"
+
+	mux.HandleFunc(fmt.Sprintf("/schedule/%s", scheduleID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"id": "1","timetable":{"per-hour":0,"hours-of-day":[0]}}`)
+	})
+
+	ctx := context.Background()
+	s, err := client.Schedule.Get(ctx, scheduleID)
+	if err != nil {
+		t.Errorf("Schedules.Get got error: %v", err)
+	}
+
+	want := &Schedule{
+		ID: "1",
+		Timetable: Timetable{
+			PerHour:    0,
+			HoursOfDay: []int{0},
+		},
+	}
+
+	if !cmp.Equal(s, want) {
+		t.Errorf("Schedules.Get got %+v, want %+v", s, want)
+	}
+}
