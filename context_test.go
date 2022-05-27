@@ -130,7 +130,7 @@ func Test_contexts_ListVariables(t *testing.T) {
 
 	contextID := "ctx1"
 
-	mux.HandleFunc(fmt.Sprintf("/context/%s", contextID), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(fmt.Sprintf("/context/%s/environment-variable", contextID), func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
 		testHeader(t, r, "Accept", "application/json")
 		testHeader(t, r, "Circle-Token", client.token)
