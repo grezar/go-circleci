@@ -163,7 +163,7 @@ func (s *contexts) ListVariables(ctx context.Context, contextID string) (*Contex
 		return nil, ErrRequiredContextID
 	}
 
-	u := fmt.Sprintf("context/%s", contextID)
+	u := fmt.Sprintf("context/%s/environment-variable", contextID)
 	req, err := s.client.newRequest("GET", u, nil)
 	if err != nil {
 		return nil, err
