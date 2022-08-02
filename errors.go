@@ -11,6 +11,7 @@ var (
 	ErrRequiredEnvironmentVariableName       = errors.New("environment variable name is required")
 	ErrRequiredEnvironmentVariableValue      = errors.New("missing environment variable value")
 	ErrRequiredProjectSlug                   = errors.New("project slug is required")
+	ErrRequiredProjectID                     = errors.New("project ID is required")
 	ErrRequiredProjectCheckoutKeyType        = errors.New("project checkout key type is required")
 	ErrRequiredProjectCheckoutKeyFingerprint = errors.New("project checkout key fingerprint is required")
 	ErrRequiredProjectVariableName           = errors.New("project variable name is required")
