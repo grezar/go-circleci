@@ -31,3 +31,8 @@ func OwnerType(v OwnerTypeType) *OwnerTypeType {
 func CheckoutKeyType(v CheckoutKeyTypeType) *CheckoutKeyTypeType {
 	return &v
 }
+
+// EventType return a pointer to the given Event
+func EventType(v Event) *Event {
+	return &v
+}

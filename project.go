@@ -36,6 +36,7 @@ const (
 )
 
 type Project struct {
+	ID               string   `json:"id"`
 	Slug             string   `json:"slug"`
 	Name             string   `json:"name"`
 	OrganizationName string   `json:"organization_name"`
