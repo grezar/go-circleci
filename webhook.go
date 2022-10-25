@@ -73,8 +73,8 @@ func (w *webhooks) List(ctx context.Context, options WebhookListOptions) (*Webho
 type Event string
 
 const (
-	EventWorkflowCompleted = "workflow-completed"
-	EventJobCompleted      = "job-completed"
+	EventWorkflowCompleted Event = "workflow-completed"
+	EventJobCompleted      Event = "job-completed"
 )
 
 type WebhookCreateOptions struct {
