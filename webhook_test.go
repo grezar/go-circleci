@@ -69,7 +69,7 @@ func Test_webhooks_Create(t *testing.T) {
 			ID:   "123",
 			Type: "project",
 		},
-		Events:    []*Event{EventType("workflow-completed")},
+		Events:    []*Event{EventType(EventWorkflowCompleted)},
 		VerifyTLS: Bool(false),
 	})
 	if err != nil {
