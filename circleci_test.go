@@ -52,8 +52,12 @@ func testBody(t *testing.T, r *http.Request, want string) {
 	if err != nil {
 		t.Errorf("Error reading request body: %v", err)
 	}
+
 	var mwant map[string]interface{}
-	json.Unmarshal([]byte(want), &mwant)
+	err = json.Unmarshal([]byte(want), &mwant)
+	if err != nil {
+		t.Errorf("Error Unmarshalling want string: %v", err)
+	}
 
 	if !cmp.Equal(mgot, mwant) {
 		t.Errorf("request Body is %s, want %s", mgot, mwant)
