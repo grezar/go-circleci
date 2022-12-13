@@ -2,9 +2,11 @@ package circleci
 
 import (
 	"context"
+	"fmt"
 )
 
 type Webhooks interface {
+	Get(ctx context.Context, id string) (*Webhook, error)
 	List(ctx context.Context, options WebhookListOptions) (*WebhookList, error)
 	Create(ctx context.Context, options WebhookCreateOptions) (*Webhook, error)
 }
@@ -31,6 +33,26 @@ type Webhook struct {
 type Scope struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
+}
+
+func (s *webhooks) Get(ctx context.Context, id string) (*Webhook, error) {
+	if !validString(&id) {
+		return nil, ErrRequiredWebhookID
+	}
+
+	u := fmt.Sprintf("webhook/%s", id)
+	req, err := s.client.newRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	w := &Webhook{}
+	err = s.client.do(ctx, req, w)
+	if err != nil {
+		return nil, err
+	}
+
+	return w, nil
 }
 
 type WebhookListOptions struct {

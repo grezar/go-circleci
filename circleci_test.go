@@ -1,12 +1,14 @@
 package circleci
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func setup() (client *Client, mux *http.ServeMux, serverURL string, teardown func()) {
@@ -45,12 +47,16 @@ func testHeader(t *testing.T, r *http.Request, header string, want string) {
 
 func testBody(t *testing.T, r *http.Request, want string) {
 	t.Helper()
-	b, err := ioutil.ReadAll(r.Body)
+	var mgot map[string]interface{}
+	err := json.NewDecoder(r.Body).Decode(&mgot)
 	if err != nil {
 		t.Errorf("Error reading request body: %v", err)
 	}
-	if got := string(b); got != want {
-		t.Errorf("request Body is %s, want %s", got, want)
+	var mwant map[string]interface{}
+	json.Unmarshal([]byte(want), &mwant)
+
+	if !cmp.Equal(mgot, mwant) {
+		t.Errorf("request Body is %s, want %s", mgot, mwant)
 	}
 }
 

@@ -27,6 +27,7 @@ var (
 	ErrRequiredJobName                       = errors.New("job name is required")
 	ErrRequiredWebhookEvents                 = errors.New("webhook events is required")
 	ErrRequiredWebhookName                   = errors.New("webhook name is required")
+	ErrRequiredWebhookID                     = errors.New("webhook ID is required")
 	ErrRequiredWebhookURL                    = errors.New("webhook URL is required")
 	ErrRequiredWebhookVerifyTLS              = errors.New("webhook verifyTLS is required")
 	ErrRequiredWebhookSigningSecret          = errors.New("webhook signingSecret is required")

@@ -9,6 +9,31 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func Test_webhooks_Get(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	webhookID := "webhook1"
+	mux.HandleFunc(fmt.Sprintf("/webhook/%s", webhookID), func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, "Accept", "application/json")
+		testHeader(t, r, "Circle-Token", client.token)
+		fmt.Fprint(w, `{"id": "1"}`)
+	})
+
+	ctx := context.Background()
+	w, err := client.Webhooks.Get(ctx, webhookID)
+	if err != nil {
+		t.Errorf("Webhooks.Get got error: %v", err)
+	}
+
+	want := &Webhook{ID: "1"}
+
+	if !cmp.Equal(w, want) {
+		t.Errorf("Webhooks.Get got %+v, want %+v", w, want)
+	}
+}
+
 func Test_webhooks_List(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
