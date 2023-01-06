@@ -70,11 +70,15 @@ func (s *projects) Get(ctx context.Context, projectSlug string) (*Project, error
 }
 
 type ProjectCheckoutKey struct {
-	PublicKey   string              `json:"public-key"`
+        // seems like public documentation says public-key should be the key but
+        // actually returned one is public_key
+	PublicKey   string              `json:"public_key"`
 	Type        CheckoutKeyTypeType `json:"type"`
 	Fingerprint string              `json:"fingerprint"`
 	Preferred   bool                `json:"preferred"`
-	CreatedAt   time.Time           `json:"created-at"`
+        // seems like public documentation says created-at should be the key but
+        // actually returned one is created_at
+	CreatedAt   time.Time           `json:"created_at"`
 }
 
 type ProjectCreateCheckoutKeyOptions struct {
