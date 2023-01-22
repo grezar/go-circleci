@@ -14,7 +14,7 @@ type Projects interface {
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
-	ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error)
+	ListVariables(ctx context.Context, projectSlug string, options ProjectListVariablesOptions) (*ProjectVariableList, error)
 	DeleteVariable(ctx context.Context, projectSlug, name string) error
 	GetVariable(ctx context.Context, projectSlug, name string) (*ProjectVariable, error)
 	TriggerPipeline(ctx context.Context, projectSlug string, options ProjectTriggerPipelineOptions) (*Pipeline, error)
@@ -234,18 +234,22 @@ func (s *projects) CreateVariable(ctx context.Context, projectSlug string, optio
 	return pv, nil
 }
 
+type ProjectListVariablesOptions struct {
+	PageToken *string `url:"page-token,omitempty"`
+}
+
 type ProjectVariableList struct {
 	Items         []*ProjectVariable `json:"items"`
 	NextPageToken string             `json:"next_page_token"`
 }
 
-func (s *projects) ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error) {
+func (s *projects) ListVariables(ctx context.Context, projectSlug string, options ProjectListVariablesOptions) (*ProjectVariableList, error) {
 	if !validString(&projectSlug) {
 		return nil, ErrRequiredProjectSlug
 	}
 
 	u := fmt.Sprintf("project/%s/envvar", projectSlug)
-	req, err := s.client.newRequest("GET", u, nil)
+	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
 	}

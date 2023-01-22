@@ -203,7 +203,7 @@ func Test_projects_ListVariables(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	pvl, err := client.Projects.ListVariables(ctx, projectSlug)
+	pvl, err := client.Projects.ListVariables(ctx, projectSlug, ProjectListVariablesOptions{})
 	if err != nil {
 		t.Errorf("Projects.ListVariables got error: %v", err)
 	}
