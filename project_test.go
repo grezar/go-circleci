@@ -85,7 +85,7 @@ func Test_projects_ListCheckoutKeys(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	pckl, err := client.Projects.ListCheckoutKeys(ctx, projectSlug)
+	pckl, err := client.Projects.ListCheckoutKeys(ctx, projectSlug, ProjectListCheckoutKeysOptions{})
 	if err != nil {
 		t.Errorf("Projects.ListCheckoutKeys got error: %v", err)
 	}

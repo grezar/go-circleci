@@ -10,7 +10,7 @@ import (
 type Projects interface {
 	Get(ctx context.Context, projectSlug string) (*Project, error)
 	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
-	ListCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
+	ListCheckoutKeys(ctx context.Context, projectSlug string, options ProjectListCheckoutKeysOptions) (*ProjectCheckoutKeyList, error)
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
@@ -117,18 +117,22 @@ func (s *projects) CreateCheckoutKey(ctx context.Context, projectSlug string, op
 	return pck, nil
 }
 
+type ProjectListCheckoutKeysOptions struct {
+	PageToken *string `url:"page-token,omitempty"`
+}
+
 type ProjectCheckoutKeyList struct {
 	Items         []*ProjectCheckoutKey `json:"items"`
 	NextPageToken string                `json:"next_page_token"`
 }
 
-func (s *projects) ListCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error) {
+func (s *projects) ListCheckoutKeys(ctx context.Context, projectSlug string, options ProjectListCheckoutKeysOptions) (*ProjectCheckoutKeyList, error) {
 	if !validString(&projectSlug) {
 		return nil, ErrRequiredProjectSlug
 	}
 
 	u := fmt.Sprintf("project/%s/checkout-key", projectSlug)
-	req, err := s.client.newRequest("GET", u, nil)
+	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
 	}
