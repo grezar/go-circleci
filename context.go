@@ -153,7 +153,7 @@ type ContextVariableList struct {
 }
 
 type ContextListVariablesOptions struct {
-	NextPageToken string `url:"page-token,omitempty"`
+	PageToken string `url:"page-token,omitempty"`
 }
 
 type ContextVariable struct {
