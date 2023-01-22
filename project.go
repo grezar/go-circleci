@@ -23,7 +23,7 @@ type Projects interface {
 	GetPipeline(ctx context.Context, projectSlug string, pipelineNumber string) (*Pipeline, error)
 }
 
-// projects implementes Projects interface
+// projects implements Projects interface
 type projects struct {
 	client *Client
 }
@@ -70,15 +70,15 @@ func (s *projects) Get(ctx context.Context, projectSlug string) (*Project, error
 }
 
 type ProjectCheckoutKey struct {
-        // seems like public documentation says public-key should be the key but
-        // actually returned one is public_key
+	// seems like public documentation says public-key should be the key but
+	// actually returned one is public_key
 	PublicKey   string              `json:"public_key"`
 	Type        CheckoutKeyTypeType `json:"type"`
 	Fingerprint string              `json:"fingerprint"`
 	Preferred   bool                `json:"preferred"`
-        // seems like public documentation says created-at should be the key but
-        // actually returned one is created_at
-	CreatedAt   time.Time           `json:"created_at"`
+	// seems like public documentation says created-at should be the key but
+	// actually returned one is created_at
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type ProjectCreateCheckoutKeyOptions struct {
