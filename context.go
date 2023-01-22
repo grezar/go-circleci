@@ -152,19 +152,23 @@ type ContextVariableList struct {
 	NextPageToken string `json:"next_page_token"`
 }
 
+type ContextListVariablesOptions struct {
+	NextPageToken string `url:"page-token,omitempty"`
+}
+
 type ContextVariable struct {
 	Variable  string    `json:"variable"`
 	CreatedAt time.Time `json:"created_at"`
 	ContextID string    `json:"context_id"`
 }
 
-func (s *contexts) ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error) {
+func (s *contexts) ListVariables(ctx context.Context, contextID string, options ContextListVariablesOptions) (*ContextVariableList, error) {
 	if !validString(&contextID) {
 		return nil, ErrRequiredContextID
 	}
 
 	u := fmt.Sprintf("context/%s/environment-variable", contextID)
-	req, err := s.client.newRequest("GET", u, nil)
+	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
 	}

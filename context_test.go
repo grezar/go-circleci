@@ -138,7 +138,7 @@ func Test_contexts_ListVariables(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	cl, err := client.Contexts.ListVariables(ctx, contextID)
+	cl, err := client.Contexts.ListVariables(ctx, contextID, ContextListVariablesOptions{})
 	if err != nil {
 		t.Errorf("Contexts.ListVariables got error: %v", err)
 	}
