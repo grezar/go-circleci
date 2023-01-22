@@ -159,6 +159,7 @@ type ContextListVariablesOptions struct {
 type ContextVariable struct {
 	Variable  string    `json:"variable"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 	ContextID string    `json:"context_id"`
 }
 
