@@ -12,7 +12,7 @@ type Contexts interface {
 	Get(ctx context.Context, contextID string) (*Context, error)
 	Create(ctx context.Context, options ContextCreateOptions) (*Context, error)
 	Delete(ctx context.Context, contextID string) error
-	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
+	ListVariables(ctx context.Context, contextID string, options ContextListVariablesOptions) (*ContextVariableList, error)
 	RemoveVariable(ctx context.Context, contextID string, variableName string) error
 	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options ContextAddOrUpdateVariableOptions) (*ContextVariable, error)
 }
