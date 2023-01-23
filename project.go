@@ -10,11 +10,11 @@ import (
 type Projects interface {
 	Get(ctx context.Context, projectSlug string) (*Project, error)
 	CreateCheckoutKey(ctx context.Context, projectSlug string, options ProjectCreateCheckoutKeyOptions) (*ProjectCheckoutKey, error)
-	ListCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error)
+	ListCheckoutKeys(ctx context.Context, projectSlug string, options ProjectListCheckoutKeysOptions) (*ProjectCheckoutKeyList, error)
 	GetCheckoutKey(ctx context.Context, projectSlug, fingerprint string) (*ProjectCheckoutKey, error)
 	DeleteCheckoutKey(ctx context.Context, projectSlug, fingerprint string) error
 	CreateVariable(ctx context.Context, projectSlug string, options ProjectCreateVariableOptions) (*ProjectVariable, error)
-	ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error)
+	ListVariables(ctx context.Context, projectSlug string, options ProjectListVariablesOptions) (*ProjectVariableList, error)
 	DeleteVariable(ctx context.Context, projectSlug, name string) error
 	GetVariable(ctx context.Context, projectSlug, name string) (*ProjectVariable, error)
 	TriggerPipeline(ctx context.Context, projectSlug string, options ProjectTriggerPipelineOptions) (*Pipeline, error)
@@ -23,7 +23,7 @@ type Projects interface {
 	GetPipeline(ctx context.Context, projectSlug string, pipelineNumber string) (*Pipeline, error)
 }
 
-// projects implementes Projects interface
+// projects implements Projects interface
 type projects struct {
 	client *Client
 }
@@ -70,15 +70,15 @@ func (s *projects) Get(ctx context.Context, projectSlug string) (*Project, error
 }
 
 type ProjectCheckoutKey struct {
-        // seems like public documentation says public-key should be the key but
-        // actually returned one is public_key
+	// seems like public documentation says public-key should be the key but
+	// actually returned one is public_key
 	PublicKey   string              `json:"public_key"`
 	Type        CheckoutKeyTypeType `json:"type"`
 	Fingerprint string              `json:"fingerprint"`
 	Preferred   bool                `json:"preferred"`
-        // seems like public documentation says created-at should be the key but
-        // actually returned one is created_at
-	CreatedAt   time.Time           `json:"created_at"`
+	// seems like public documentation says created-at should be the key but
+	// actually returned one is created_at
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type ProjectCreateCheckoutKeyOptions struct {
@@ -117,18 +117,22 @@ func (s *projects) CreateCheckoutKey(ctx context.Context, projectSlug string, op
 	return pck, nil
 }
 
+type ProjectListCheckoutKeysOptions struct {
+	PageToken *string `url:"page-token,omitempty"`
+}
+
 type ProjectCheckoutKeyList struct {
 	Items         []*ProjectCheckoutKey `json:"items"`
 	NextPageToken string                `json:"next_page_token"`
 }
 
-func (s *projects) ListCheckoutKeys(ctx context.Context, projectSlug string) (*ProjectCheckoutKeyList, error) {
+func (s *projects) ListCheckoutKeys(ctx context.Context, projectSlug string, options ProjectListCheckoutKeysOptions) (*ProjectCheckoutKeyList, error) {
 	if !validString(&projectSlug) {
 		return nil, ErrRequiredProjectSlug
 	}
 
 	u := fmt.Sprintf("project/%s/checkout-key", projectSlug)
-	req, err := s.client.newRequest("GET", u, nil)
+	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
 	}
@@ -230,18 +234,22 @@ func (s *projects) CreateVariable(ctx context.Context, projectSlug string, optio
 	return pv, nil
 }
 
+type ProjectListVariablesOptions struct {
+	PageToken *string `url:"page-token,omitempty"`
+}
+
 type ProjectVariableList struct {
 	Items         []*ProjectVariable `json:"items"`
 	NextPageToken string             `json:"next_page_token"`
 }
 
-func (s *projects) ListVariables(ctx context.Context, projectSlug string) (*ProjectVariableList, error) {
+func (s *projects) ListVariables(ctx context.Context, projectSlug string, options ProjectListVariablesOptions) (*ProjectVariableList, error) {
 	if !validString(&projectSlug) {
 		return nil, ErrRequiredProjectSlug
 	}
 
 	u := fmt.Sprintf("project/%s/envvar", projectSlug)
-	req, err := s.client.newRequest("GET", u, nil)
+	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
 	}

@@ -85,7 +85,7 @@ func Test_projects_ListCheckoutKeys(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	pckl, err := client.Projects.ListCheckoutKeys(ctx, projectSlug)
+	pckl, err := client.Projects.ListCheckoutKeys(ctx, projectSlug, ProjectListCheckoutKeysOptions{})
 	if err != nil {
 		t.Errorf("Projects.ListCheckoutKeys got error: %v", err)
 	}
@@ -203,7 +203,7 @@ func Test_projects_ListVariables(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	pvl, err := client.Projects.ListVariables(ctx, projectSlug)
+	pvl, err := client.Projects.ListVariables(ctx, projectSlug, ProjectListVariablesOptions{})
 	if err != nil {
 		t.Errorf("Projects.ListVariables got error: %v", err)
 	}
