@@ -12,7 +12,7 @@ type Contexts interface {
 	Get(ctx context.Context, contextID string) (*Context, error)
 	Create(ctx context.Context, options ContextCreateOptions) (*Context, error)
 	Delete(ctx context.Context, contextID string) error
-	ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error)
+	ListVariables(ctx context.Context, contextID string, options ContextListVariablesOptions) (*ContextVariableList, error)
 	RemoveVariable(ctx context.Context, contextID string, variableName string) error
 	AddOrUpdateVariable(ctx context.Context, contextID string, variableName string, options ContextAddOrUpdateVariableOptions) (*ContextVariable, error)
 }
@@ -152,19 +152,24 @@ type ContextVariableList struct {
 	NextPageToken string `json:"next_page_token"`
 }
 
+type ContextListVariablesOptions struct {
+	PageToken string `url:"page-token,omitempty"`
+}
+
 type ContextVariable struct {
 	Variable  string    `json:"variable"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 	ContextID string    `json:"context_id"`
 }
 
-func (s *contexts) ListVariables(ctx context.Context, contextID string) (*ContextVariableList, error) {
+func (s *contexts) ListVariables(ctx context.Context, contextID string, options ContextListVariablesOptions) (*ContextVariableList, error) {
 	if !validString(&contextID) {
 		return nil, ErrRequiredContextID
 	}
 
 	u := fmt.Sprintf("context/%s/environment-variable", contextID)
-	req, err := s.client.newRequest("GET", u, nil)
+	req, err := s.client.newRequest("GET", u, &options)
 	if err != nil {
 		return nil, err
 	}
