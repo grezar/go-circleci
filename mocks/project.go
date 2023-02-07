@@ -154,18 +154,18 @@ func (mr *MockProjectsMockRecorder) GetVariable(ctx, projectSlug, name interface
 }
 
 // ListCheckoutKeys mocks base method.
-func (m *MockProjects) ListCheckoutKeys(ctx context.Context, projectSlug string) (*circleci.ProjectCheckoutKeyList, error) {
+func (m *MockProjects) ListCheckoutKeys(ctx context.Context, projectSlug string, options circleci.ProjectListCheckoutKeysOptions) (*circleci.ProjectCheckoutKeyList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListCheckoutKeys", ctx, projectSlug)
+	ret := m.ctrl.Call(m, "ListCheckoutKeys", ctx, projectSlug, options)
 	ret0, _ := ret[0].(*circleci.ProjectCheckoutKeyList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListCheckoutKeys indicates an expected call of ListCheckoutKeys.
-func (mr *MockProjectsMockRecorder) ListCheckoutKeys(ctx, projectSlug interface{}) *gomock.Call {
+func (mr *MockProjectsMockRecorder) ListCheckoutKeys(ctx, projectSlug, options interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCheckoutKeys", reflect.TypeOf((*MockProjects)(nil).ListCheckoutKeys), ctx, projectSlug)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCheckoutKeys", reflect.TypeOf((*MockProjects)(nil).ListCheckoutKeys), ctx, projectSlug, options)
 }
 
 // ListMyPipelines mocks base method.
@@ -199,18 +199,18 @@ func (mr *MockProjectsMockRecorder) ListPipelines(ctx, projectSlug, options inte
 }
 
 // ListVariables mocks base method.
-func (m *MockProjects) ListVariables(ctx context.Context, projectSlug string) (*circleci.ProjectVariableList, error) {
+func (m *MockProjects) ListVariables(ctx context.Context, projectSlug string, options circleci.ProjectListVariablesOptions) (*circleci.ProjectVariableList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListVariables", ctx, projectSlug)
+	ret := m.ctrl.Call(m, "ListVariables", ctx, projectSlug, options)
 	ret0, _ := ret[0].(*circleci.ProjectVariableList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListVariables indicates an expected call of ListVariables.
-func (mr *MockProjectsMockRecorder) ListVariables(ctx, projectSlug interface{}) *gomock.Call {
+func (mr *MockProjectsMockRecorder) ListVariables(ctx, projectSlug, options interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVariables", reflect.TypeOf((*MockProjects)(nil).ListVariables), ctx, projectSlug)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVariables", reflect.TypeOf((*MockProjects)(nil).ListVariables), ctx, projectSlug, options)
 }
 
 // TriggerPipeline mocks base method.
