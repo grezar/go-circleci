@@ -27,13 +27,13 @@ func Test_insights_ListSummaryMetricsForWorkflows(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	sml, err := client.Insights.ListSummaryMetricsForWorkflos(ctx, projectSlug, InsightsListSummaryMetricsOptions{
+	sml, err := client.Insights.ListSummaryMetricsForWorkflows(ctx, projectSlug, InsightsListSummaryMetricsOptions{
 		PageToken:       String("1"),
 		AllBranches:     Bool(true),
 		ReportingWindow: ReportingWindow(Last90Days),
 	})
 	if err != nil {
-		t.Errorf("Insights.ListSummaryMetricsForWorkflos got error: %v", err)
+		t.Errorf("Insights.ListSummaryMetricsForWorkflows got error: %v", err)
 	}
 
 	want := &SummaryMetricsList{
@@ -46,7 +46,7 @@ func Test_insights_ListSummaryMetricsForWorkflows(t *testing.T) {
 	}
 
 	if !cmp.Equal(sml, want) {
-		t.Errorf("Insights.ListSummaryMetricsForWorkflos got %+v, want %+v", sml, want)
+		t.Errorf("Insights.ListSummaryMetricsForWorkflows got %+v, want %+v", sml, want)
 	}
 }
 

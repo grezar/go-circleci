@@ -50,19 +50,19 @@ func (mr *MockInsightsMockRecorder) GetTestMetricsForWorkflows(ctx, projectSlug,
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTestMetricsForWorkflows", reflect.TypeOf((*MockInsights)(nil).GetTestMetricsForWorkflows), ctx, projectSlug, workflowName, options)
 }
 
-// ListSummaryMetricsForWorkflos mocks base method.
-func (m *MockInsights) ListSummaryMetricsForWorkflos(ctx context.Context, projectSlug string, options circleci.InsightsListSummaryMetricsOptions) (*circleci.SummaryMetricsList, error) {
+// ListSummaryMetricsForWorkflows mocks base method.
+func (m *MockInsights) ListSummaryMetricsForWorkflows(ctx context.Context, projectSlug string, options circleci.InsightsListSummaryMetricsOptions) (*circleci.SummaryMetricsList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListSummaryMetricsForWorkflos", ctx, projectSlug, options)
+	ret := m.ctrl.Call(m, "ListSummaryMetricsForWorkflows", ctx, projectSlug, options)
 	ret0, _ := ret[0].(*circleci.SummaryMetricsList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListSummaryMetricsForWorkflos indicates an expected call of ListSummaryMetricsForWorkflos.
-func (mr *MockInsightsMockRecorder) ListSummaryMetricsForWorkflos(ctx, projectSlug, options interface{}) *gomock.Call {
+// ListSummaryMetricsForWorkflows indicates an expected call of ListSummaryMetricsForWorkflows.
+func (mr *MockInsightsMockRecorder) ListSummaryMetricsForWorkflows(ctx, projectSlug, options interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSummaryMetricsForWorkflos", reflect.TypeOf((*MockInsights)(nil).ListSummaryMetricsForWorkflos), ctx, projectSlug, options)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSummaryMetricsForWorkflows", reflect.TypeOf((*MockInsights)(nil).ListSummaryMetricsForWorkflows), ctx, projectSlug, options)
 }
 
 // ListSummaryMetricsForWorkflowJobs mocks base method.

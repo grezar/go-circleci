@@ -8,7 +8,7 @@ import (
 )
 
 type Insights interface {
-	ListSummaryMetricsForWorkflos(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
+	ListSummaryMetricsForWorkflows(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
 	ListSummaryMetricsForWorkflowJobs(ctx context.Context, projectSlug, workflowName string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error)
 	GetTestMetricsForWorkflows(ctx context.Context, projectSlug, workflowName string, options InsightsGetTestMetricsOptions) (*TestMetrics, error)
 	ListWorkflowRuns(ctx context.Context, projectSlug, workflowName string, options InsightsListWorkflowRunsOptions) (*WorkflowRunList, error)
@@ -75,7 +75,7 @@ func (o InsightsListSummaryMetricsOptions) valid() error {
 	return nil
 }
 
-func (s *insights) ListSummaryMetricsForWorkflos(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error) {
+func (s *insights) ListSummaryMetricsForWorkflows(ctx context.Context, projectSlug string, options InsightsListSummaryMetricsOptions) (*SummaryMetricsList, error) {
 	if err := options.valid(); err != nil {
 		return nil, err
 	}
