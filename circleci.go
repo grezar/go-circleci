@@ -227,5 +227,5 @@ func checkResponseCode(r *http.Response) error {
 		return errors.New(r.Status)
 	}
 
-	return errors.New(errResponse.Message)
+	return fmt.Errorf("response_code: %d, error_message: %s", r.StatusCode, errResponse.Message)
 }
