@@ -163,7 +163,7 @@ type TestMetadataList struct {
 type TestMetadata struct {
 	Message   string `json:"message"`
 	Source    string `json:"source"`
-	RunTime   string `json:"run_time"`
+	RunTime   int64 `json:"run_time"`
 	File      string `json:"file"`
 	Result    string `json:"result"`
 	Name      string `json:"name"`
