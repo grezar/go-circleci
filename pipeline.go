@@ -13,6 +13,7 @@ type Pipelines interface {
 	Get(ctx context.Context, pipelineID string) (*Pipeline, error)
 	GetConfig(ctx context.Context, pipelineID string) (*PipelineConfig, error)
 	ListWorkflows(ctx context.Context, pipelineID string, options PipelineListWorkflowsOptions) (*WorkflowList, error)
+	ListProjectPipelines(ctx context.Context, options ProjectPipelinesListOptions) (*PipelineList, error)
 }
 
 type pipelines struct {
@@ -75,7 +76,18 @@ type PipelineListOptions struct {
 	PageToken *string `url:"page-token,omitempty"`
 }
 
+type ProjectPipelinesListOptions struct {
+	OrgSlug   *string `url:"org-slug,omitempty"`
+	PageToken *string `url:"page-token,omitempty"`
+	Branch    *string `url:"branch,omitempty"`
+}
+
 func (o PipelineListOptions) valid() error {
+	// Nothing is required
+	return nil
+}
+
+func (o ProjectPipelinesListOptions) valid() error {
 	// Nothing is required
 	return nil
 }
@@ -90,7 +102,25 @@ func (s *pipelines) List(ctx context.Context, options PipelineListOptions) (*Pip
 	if err != nil {
 		return nil, err
 	}
+	pl := &PipelineList{}
+	err = s.client.do(ctx, req, pl)
+	if err != nil {
+		return nil, err
+	}
 
+	return pl, nil
+}
+
+func (s *pipelines) ListProjectPipelines(ctx context.Context, options ProjectPipelinesListOptions) (*PipelineList, error) {
+	if err := options.valid(); err != nil {
+		return nil, err
+	}
+
+	u := fmt.Sprintf("project/gh/%s/pipeline", *options.OrgSlug)
+	req, err := s.client.newRequest("GET", u, &options)
+	if err != nil {
+		return nil, err
+	}
 	pl := &PipelineList{}
 	err = s.client.do(ctx, req, pl)
 	if err != nil {
